@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="/jQueryAjax/js/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+	<div id="fisContactsUpdate"> 
+	   <input id="btnUpdate" type="button" value="Update"/>
+	   <br/>
+	   <div id="notifications">
+	   		
+	   </div>
+	   <br/> 
+	   <br/> 
+	   <!--TEST-->
+	   <input type="button" id="btn_TestWebService" value="Test" onclick="testWebService()"/>
+	   <div id="responseXMLDIV">
+	   	
+	   </div>
+   </div> 
+   <!--TEST-->
+   <script type="text/javascript">
+   		$(document).ready(function(){
+
+  
+   		});
+
+   		function testWebService(){
+
+  			var soapEnv =  "<soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'><soap:Body><Person xmlns='http://Festo.Collaboration'><username>ssd</username></Person></soap:Body></soap:Envelope>";  
+	
+		    $.ajax({  
+		        url:"http://ademsp10.de.festo.net/Collaboration.SAP.Person/PersonsWS.asmx", 
+		        type: "POST",  
+		        dataType: "xml",  
+		        data: soapEnv,  
+		        complete: testPersonResult,  
+		        contentType: "text/xml;charset=\"utf-8\""
+		    });	
+		
+    	}
+
+		function testPersonResult(xData, status) { 
+			//alert(status); 
+		    var result = xData.responseXML;
+		    if (status == "success" && result){  
+		    		var $responseXMLObj = $(result);
+		    		
+		        	var textStr = "<span>First Name: "+ $responseXMLObj.find("FirstName").text() + "</span><br/>";
+		        	textStr += "<span>Last Name: "+$responseXMLObj.find("LastName").text() + "</span><br/>";
+		        	textStr += "<span>Deleted: "+$responseXMLObj.find("Exists").text() + "</span><br/>";
+		        	textStr += "<span>Street: "+$responseXMLObj.find("Street").first().text() + "</span><br/>";
+		        	textStr += "<span>Company Name: "+$responseXMLObj.find("CompanyName").text() + "</span><br/>";
+		        	textStr += "<span>Zip Code: "+$responseXMLObj.find("ZipCode").first().text() + "</span><br/>";
+		        	textStr += "<span>City: "+$responseXMLObj.find("City").first().text() + "</span><br/>";
+		        	textStr += "<span>Country Code: "+$responseXMLObj.find("CountryCode").first().text() + "</span><br/>";
+		        	textStr += "<span>Department: "+$responseXMLObj.find("Code").text() + "</span><br/>";
+		        	textStr += "<span>Cost Centre: "+$responseXMLObj.find("CostCentre").text() + "</span><br/>";
+
+		        	$("#responseXMLDIV").html(textStr);
+
+
+		        	var updatedItem={
+		                  "__metadata":{"type":"SP.Data.FISContactsListItem"},
+		                  "FirstName": $responseXMLObj.find("FirstName").first().text(),
+		                  "Surname": $responseXMLObj.find("LastName").first().text(),
+		                  "Deleted": $responseXMLObj.find("Exists").first().text()=="true"?false:true,
+		                  "Address": $responseXMLObj.find("Street").first().text(),
+		                  "Company": $responseXMLObj.find("CompanyName").first().text(),
+		                  "PostalCode": $responseXMLObj.find("ZipCode").first().text(),
+		                  "City": $responseXMLObj.find("City").first().text(),
+		                  "Country": $responseXMLObj.find("CountryCode").first().text(),
+		                  "Departments": $responseXMLObj.find("Code").first().text(),
+		                  "CostCenter": $responseXMLObj.find("CostCentre").first().text()
+		              };
+
+	            
+		            $.ajax({
+		                  url: "http://isp.emea.festo.net/sites/cn0jacky/_api/web/lists/GetByTitle('FISContacts')/items(721)",
+		                  type: "POST",
+		                  contentType: "application/json;odata=verbose",
+		                  data: JSON.stringify(updatedItem),
+		                  headers:{
+		                      "ACCEPT": "application/json;odata=verbose",
+		                      "X-RequestDigest": "0x3589C565F01F744FFC8152846C07B3F7D5838948FB462CC731184E1FF2AEBF270C7646FCD3020D08FE32FA51DB49F61E9B99346D456979B170178E7C2BB353ED,19 Oct 2015 16:18:24 -0000",
+		                      "X-HTTP-METHOD": "MERGE",
+		                      "IF-MATCH": "*"
+		                  },
+		                  success: function(data){
+		                      alert(JSON.stringify(data));
+		                  },
+		                  error: function(xhr){
+		                      alert(xhr.status+': '+xhr.statusText);
+		                  }
+		              });
+		    }
+		}  
+
+   </script>
+
+   <script type="text/javascript">
+    var selectedItemArr; 
+		var updatedItemArr;
+
+   	$(document).ready(function(){
+
+		//add click event for update button
+		$("#btnUpdate").on("click", function(){
+			//clear array
+			selectedItemArr = []; 
+			updatedItemArr = [];
+			
+			updateNotifications("Updating now. Please do not close current page!");
+			
+			getSelectedItems(0, 0);	
+						
+			
+			//updateFISContacts(updatedItemArr);
+					
+			updateNotifications("Update is finished!");
+		});
+	});
+
+	//var siteUrl = window.location.protocol + "//" + window.location.host + _spPageContextInfo.siteServerRelativeUrl;
+	var siteUrl = "http://isp.emea.festo.net/sites/cn0jacky";
+	var url_getItems = siteUrl+"/_api/web/lists/GetByTitle('FISContacts')/items?$select=Title,ID";
+	var url_webService = "http://ademsp10.de.festo.net/Collaboration.SAP.Person/PersonsWS.asmx";
+	var url_updateItems = "";
+	
+	var selectedItemArr; //containing user login id
+	var updatedItemArr;
+	
+	//Display notifications to users
+	function updateNotifications(notificationContent){
+		$("#notifications").html(notificationContent);
+	}
+	
+	//get selected items which will be updated
+	function getSelectedItems(startId, endId){
+		
+		//to be completed with REST API
+		$.ajax({
+                  url: url_getItems,
+                  type: "GET",
+                  headers: {"Accept": "application/json;odata=verbose"},
+                  success: function(data){
+                      if(data.d.results){
+                      		var tempKeys=[];
+	                      $.each(data.d.results, function(index, item){
+	                      	if ($.inArray(item.Title, tempKeys) == -1){
+	                      		tempKeys.push(item.Title);
+	                          selectedItemArr.push([item.Title, item.ID]); // data format: [["hmk",1],["klas",2],["gwu",3],...]
+	                        }
+	                      });
+                          
+                          if (data.d.__next) {
+                        		url_getItems = data.d.__next;
+		                        getSelectedItems(0,0);
+		                  }
+		                  else{
+		                  		alert(selectedItemArr.length);
+		                  	getLatestInfo(selectedItemArr);
+		                  }
+                      }
+                  },
+                  error: function(xhr){
+                      alert(xhr.status+': '+xhr.statusText);
+                  }
+              });
+	}
+	
+	//get latest contact info based on selected contacts
+	function getLatestInfo(originalContacts){
+	  $.each(originalContacts, function(index, item){
+	  	callPersonWebService(item[0]);
+	  });
+	}
+	
+	
+	function callPersonWebService(userId){
+		var soapEnv =  "<soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'><soap:Body><Person xmlns='http://Festo.Collaboration'><username>"+userId+"</username></Person></soap:Body></soap:Envelope>";  
+	
+		    $.ajax({  
+		        url: url_webService, 
+		        type: "POST",  
+		        dataType: "xml",  
+		        data: soapEnv,  
+		        complete: processPersonResult,  
+		        contentType: "text/xml;charset=\"utf-8\""
+		    });	
+	}
+	
+	function processPersonResult(xData, status) { 
+	    var result = xData.responseXML;
+		    
+	    try {  
+	        if (status == "success" && result){  
+		    		var $responseXMLObj = $(result);
+		    		updatedItemArr.push($responseXMLObj);
+		    		$("#notifications").html(updatedItemArr.length);
+
+		    		if($responseXMLObj.find("Username").first().text() = "ssd"){
+		    			updateFISContacts(updatedItemArr);
+		    		}
+	    	}	
+	    }  
+	    catch(e) {  
+	        alert(e);  
+	    }  
+	}  
+	
+	
+	
+	//update FIC Contacts list
+	function updateFISContacts(updatedContacts){
+
+		var $updateContact = updatedContacts[updatedContacts.length-1];
+			var updatedItem={
+                  "__metadata":{"type":"SP.Data.FISContactsListItem"},
+                  "FirstName": $updateContact.find("FirstName").first().text(),
+                  "Surname": $updateContact.find("LastName").first().text(),
+                  "Deleted": $updateContact.find("Exists").first().text()=="true"?"0":"1",
+                  "Address": $updateContact.find("Street").first().text(),
+                  "Company": $updateContact.find("CompanyName").first().text(),
+                  "PostalCode": $updateContact.find("ZipCode").first().text(),
+                  "City": $updateContact.find("City").first().text(),
+                  "Country": $updateContact.find("CountryCode").first().text(),
+                  "Departments": $updateContact.find("Code").first().text(),
+                  "CostCenter": $updateContact.find("CostCentre").first().text()
+              };
+
+            
+            $.ajax({
+                  url: "http://isp.emea.festo.net/sites/cn0jacky/_api/web/lists/GetByTitle('FISContacts')/items(721)",
+                  type: "POST",
+                  contentType: "application/json;odata=verbose",
+                  data: JSON.stringify(updatedItem),
+                  headers:{
+                      "ACCEPT": "application/json;odata=verbose",
+                      "X-RequestDigest": $("#__REQUESTDIGEST").val(),
+                      "X-HTTP-METHOD": "MERGE",
+                      "IF-MATCH": "*"
+                  },
+                  success: function(data){
+                      alert(JSON.stringify(data.d.Id));
+                  },
+                  error: function(xhr){
+                      alert(xhr.status+': '+xhr.statusText);
+                  }
+              });
+	}
+	
+</script>
+</body>
+</html>

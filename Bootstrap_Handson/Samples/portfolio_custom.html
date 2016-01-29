@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Portfolio</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=10">
+		<link rel="stylesheet" type="text/css" href="/bootstrap_handson/css/bootstrap.min.css">
+		<style type="text/css">
+			.sidebar{
+                width:20%;
+                height:100%;
+                background: #4D585E;
+                box-shadow:1px 0px 10px rgba(0,0,0,.4);
+                float:left;
+                background-image: url('../img/beaker.png');
+                background-repeat: no-repeat;
+                background-position:bottom center;
+                background-position-x: center;
+                background-position-y: 97%;
+                background-size: 40%;
+                overflow-y:hidden;
+                z-index:10;
+            }
+            .sidebar .title{
+                margin:.7em;
+                color:#83AFC7;
+                font-weight:200;
+            }
+            .sidebar ul{
+                padding:0;
+                margin:1em;
+                margin-top:0;
+                max-height:700px;
+                overflow-y:auto;
+            }
+            .sidebar ul li{
+                list-style-type:none;
+                padding:.4em;
+            }
+            .sidebar ul li a{
+                width:100%;
+                height:100%;
+                color:#fff;
+            }
+            .sidebar ul li ul{
+                margin:0;
+                height:0;
+                overflow:hidden;
+                transition:height .5s ease-in-out;
+                -o-transition:height .5s ease-in-out;
+                -moz-transition:height .5s ease-in-out;
+                -webkit-transition:height .5s ease-in-out;
+            }
+            .sidebar ul li ul li a{
+                color:#999;   
+            }
+            .heightlock{
+                height:80%;   
+                overflow-y:auto;
+            }
+            .right{
+                float:right;
+            }
+            .white{
+                color:#fff;
+                font-size:10pt;
+            }
+		</style>
+	</head>
+	<body>
+		<div>
+		<div class="sidebar">
+            <div class="heightlock">
+                <p class="title">Browse Projects</p>
+                <ul>
+                    <li><a href="#">About Me</a> <span class="glyphicon white glyphicon-plus right"></span>
+                        <ul>
+                            <li><a href="#" data-link="http://mattscode.io/profile.html">Profile</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Websites</a>  <span class="glyphicon white glyphicon-plus right"></span>
+                        <ul>
+                            <li><a href="##" data-link="http://www.baidu.com">Acixs</a>
+                            </li>
+                            <li><a href="#" data-link="http://tinderlight.com">Tinderlight</a>
+                            </li>
+                            <li><a href="#" data-link="http://12daysofindie.com">12 Days of Indie</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/Multicraft/">Multicraft</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Control Panels</a>  <span class="glyphicon white glyphicon-plus right"></span>
+
+                        <ul>
+                            <li><a href="#" data-link="http://66.85.175.201/starmap/">Starmap</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Web Projects</a>  <span class="glyphicon white glyphicon-plus right"></span>
+                        <ul>
+                            <li><a href="#" data-link="http://66.85.175.201/3dButtons/">3D Buttons</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/3DSwitch/">3D Switch</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/acixs/">New Acixs</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/bcl/">BCSS Lib</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/LaunchButton/">Launch Button</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/rd_nav/matte">RD Navigation</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Design</a>  <span class="glyphicon white glyphicon-plus right"></span>
+
+                        <ul>
+                            <li><a href="#" data-link="http://ftbservers.com/uploads/banners/bec3ce8e-f4f2-4a35-b3b7-9a98993d4b2d.jpeg">8BitBlocks Banner</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <br>
+                <p class="title">Statistics</p>
+                <ul style="color:#fff;">
+                    <li>Cups of Coffee <span class="glyphicon glyphicon-tint white right"> 608</span>
+                    </li>
+                    <li>Vision Degration <span class="glyphicon glyphicon-eye-open white right"> 20%</span>
+                    </li>
+                    <li>Bugs Squashed <span class="glyphicon glyphicon-screenshot white right"> Lots!</span>
+                    </li>
+                </ul>
+                <br>
+                <p class="title">Stuff I Know</p>
+                <ul>
+                    <li style="color:#fff"><span class="glyphicon glyphicon-pushpin"></span> &nbsp; HTML5, CSS3, Sass, Slim HTML, jQuery, JavaScipt, PHP, MySQL, Python, AngularJS, jQueryUI, jQueryMobile, Bootstrap, Photoshop, Illustraitor, Shell Scripting, CentOS Server, Ubuntu Server.</li>
+                </ul>
+                <!-- <p class="title">Contact</p>
+                <ul>
+                    <form role="form">
+                      <div class="form-group">
+                        <label class="inputlabel">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                      </div>
+                      <div class="form-group">
+                        <label class="inputlabel">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                      <button type="submit" class="btn btn-default btn-xs btn-success right">Submit</button>
+                    </form>
+                </ul>-->
+            </div>
+        </div>
+        </div>
+		<br/>
+		<br/>
+		<script type="text/javascript" src="/bootstrap_handson/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="/bootstrap_handson/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			(function(){
+
+			})();
+
+			$('.sidebar ul li').click(function(){
+                    if($(this).has('ul')){
+                        if($(this).find('ul').css('height') === '0px'){
+                            $(this).find('ul').css('height', 'auto');   
+                        }else{
+                            $(this).find('ul').css('height', '0');
+                        }
+                    }
+                });
+                
+                $('.sidebar ul li ul li').click(function(){
+                    
+                }); 
+		</script>
+	</body>
+</html>

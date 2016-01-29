@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>3D Buttons</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=10">
+		<link rel="stylesheet" type="text/css" href="/bootstrap_handson/css/bootstrap.min.css">
+		<link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+		<style type="text/css">
+			
+
+			body {
+			  font-family: 'Montserrat', sans-serif;
+			  -webkit-font-smoothing: antialiased;
+			  background-color: darken(#428bca, 20%) !important;
+			}
+
+			.true-center {
+			  position: absolute;
+			  top: 0;
+			  bottom: 0;
+			  left: 0;
+			  right: 0;
+			  margin: auto;
+			  height: 106px;
+			  width: 680px;
+			}
+
+			.btn {
+			  position: relative;
+			  border: 0 !important;
+			  &:focus { outline: 0; }
+			  &:hover { top: 2px; }
+			  &:active { top: 6px; }
+			  cursor: pointer;
+			  -webkit-font-smoothing: antialiased;
+			  font-weight: bold !important;
+			  
+			  .border-radius(10);
+			  .transition(all, 50ms, ease);
+			  .btn(rgb(204, 204, 204), 20%);
+			  
+			}
+
+			.btn-primary {
+			  .btn(#428bca);
+			}
+
+			.btn-success {
+			  .btn(#5cb85c);
+			}
+
+			.btn-info {
+			  .btn(#5bc0de);
+			}
+
+			.btn-warning {
+			  .btn(#f0ad4e);
+			}
+
+			.btn-danger {
+			  .btn(#d9534f);
+			}
+
+			.btn-link {
+			  text-shadow: none;
+			  background: none !important;
+			  .box-shadow(none);
+			  &:hover { 
+			    border: 0;
+			    background: none !important;
+			    .box-shadow(none);
+			    top: 0;
+			  }
+			  &:active { 
+			    .box-shadow(none); 
+			    top: 0;
+			  }
+			}
+
+			.btn(@color, @percent: 10%)  {
+			    border: 0;
+			    text-shadow: 0px 1px 0px darken(@color, @percent);
+			    background-color: @color;
+			    .box-shadow(0px, 6px, 0px, darken(@color, @percent));
+			    &:hover { 
+			      border: 0;
+			      background-color: lighten(@color, 5%) !important;
+			      .box-shadow(0px, 4px, 0px, darken(@color, @percent));
+			    }
+			    &:active { 
+			      .box-shadow(inset, 0px, 3px, 0px, darken(@color, @percent)); 
+			    }
+			}
+		</style>
+	</head>
+	<body>
+		
+			<div class="true-center">
+				<button type="button" class="btn btn-default btn-lg">Default</button>
+				<button type="button" class="btn btn-primary btn-lg">Primary</button>
+				<button type="button" class="btn btn-success btn-lg">Success</button>
+				<button type="button" class="btn btn-info btn-lg">Info</button>
+				<button type="button" class="btn btn-warning btn-lg">Warning</button>
+				<button type="button" class="btn btn-danger btn-lg">Danger</button>
+				<button type="button" class="btn btn-link btn-lg">Link</button>
+			</div>
+		
+		<br/>
+		<br/>
+		<script type="text/javascript" src="/bootstrap_handson/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="/bootstrap_handson/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+
+		  if (document.location.search.match(/type=embed/gi)) {
+		    window.parent.postMessage("resize", "*");
+		  }	
+
+		</script>
+	</body>
+</html>

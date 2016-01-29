@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="css/bootstrap.min.css"/>
+		<style type="text/css">
+			.dropdown-menu > li > a:hover{
+				background-image: none;
+				background-color: orange;
+			}
+  			.carousel-inner > .item > img,
+  			.carousel-inner > .item > a > img {
+      			width: 70%;
+      			margin: auto;
+      		}
+
+		</style>
+		
+	</head>
+	<body>
+		<div class="container">
+			<input type="text" id="datePickerC" class="form-control"/>
+			<br/>
+			<input type="date"/>
+			<br/>
+			<select>
+				<option>1</option>
+				<option>2</option>
+			</select>
+		</div>
+		<div class="container">
+	      <h2>Justified Tabs/Pills</h2>
+	      <p>The .nav-justified class makes navigation tabs/pills equal widths of their parent at screens wider than 768px. On smaller screens, the nav tabs/pills are stacked:</p>
+			<ul class="nav nav-tabs nav-justified" role="tablist">
+				<li class="active"><a href="#">Home</a></li>
+				<li><a href="#">HTML</a></li>
+				<li><a href="#">CSS</a></li>
+				<li><a href="#">JavaScript</a></li>
+			</ul>
+			<br/>
+			<ul class="nav nav-pills nav-justified" role="tablist">
+				<li class="active"><a href="#">Home</a></li>
+				<li><a href="#">HTML</a></li>
+				<li><a href="#">CSS</a></li>
+				<li><a href="#">JavaScript</a></li>
+			</ul>
+		</div>
+		<div class="container">
+			<h2>Dropdowns</h2>
+			<p>The .dropdown-header class is used to add headers inside the dropdown menu:</p>
+			<div class="dropdown">
+				<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button" id="menu1">Tutorials
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+					<li role="presentation" class="dropdown-header">Dropdown header 1</li>
+					<li role="presentation"><a role="menuitem" tabindex="-1" href="#">HTML</a></li>
+					<li role="presentation"><a href="menuitem" tabindex="-1" href="#">CSS</a></li>
+					<li role="presentation"><a href="menuitem" tabindex="-1" href="#">JavaScript</a></li>
+					<li role="presentation" class="divider"></li>
+					<li role="presentation" class="dropdown-header">Dropdown header 2</li>
+					<li role="presentation"><a href="#" role="menuitem" tabindex="-1">About Us</a></li>
+				</ul>
+			</div>
+		</div>
+		<br/>
+		<br/>
+		<div class="container">
+	      <h2>Glyphicon Examples</h2>
+	      <p>Envelope icon: <span class="glyphicon glyphicon-envelope"></span></p>
+	      <p>Envelope icon as a link:
+	        <a href="#">
+	          <span class="glyphicon glyphicon-envelope"></span>
+	        </a>
+	      </p>
+	      <p>Search icon: <span class="glyphicon glyphicon-search"></span></p>
+	      <p>Search icon on a button:
+	        <button type="button" class="btn btn-default">
+	          <span class="glyphicon glyphicon-search"></span> Search
+	        </button>
+	      </p>
+	      <p>Search icon on a styled button:
+	        <button type="button" class="btn btn-info">
+	          <span class="glyphicon glyphicon-search"></span> Search
+	        </button>
+	      </p>
+	      <p>Print icon: <span class="glyphicon glyphicon-print"></span></p>      
+	      <p>Print icon on a styled link button:
+	        <a href="#" class="btn btn-success btn-lg">
+	          <span class="glyphicon glyphicon-print"></span> Print 
+	        </a>
+	      </p> 
+	    </div>
+		<nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>                     
+		      </button>
+		      <a class="navbar-brand" href="#">WebSiteName</a>
+		    </div>
+		    <div class="collapse navbar-collapse" id="myNavbar">
+		      <ul class="nav navbar-nav">
+		        <li class="active"><a href="#">Home</a></li>
+		        <li class="dropdown">
+		          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
+		          <ul class="dropdown-menu">
+		            <li><a href="#">Page 1-1</a></li>
+		            <li><a href="#">Page 1-2</a></li>
+		            <li><a href="#">Page 1-3</a></li>
+		          </ul>
+		        </li>
+		        <li><a href="#">Page 2</a></li>
+		        <li><a href="#">Page 3</a></li>
+		      </ul>
+		      <ul class="nav navbar-nav navbar-right">
+		        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+		        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+		<div class="container">
+			<div id="myCarousel" class="carousel slide" data-ride="carousel">
+				<ol class="carousel-indicators">
+					<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+					<li data-target="#myCarousel" data-slide-to="1"></li>
+					<li data-target="#myCarousel" data-slide-to="2"></li>
+					<li data-target="#myCarousel" data-slide-to="3"></li>
+				</ol>
+				<div class="carousel-inner" role="listbox">
+					<div class="item active">
+						<img src="imgs/Hydrangeas.jpg" alt="Hydrangeas" width="460" height="345">
+						<div class="carousel-caption">
+							<h3>Hydrangeas</h3>
+							<p>Hydrangeas is a kind of flower</p>
+						</div>
+					</div>
+					<div class="item">
+						<img src="imgs/Desert.jpg" alt="Desert" width="460" height="345">
+						<div class="carousel-caption">
+							<h3>Desert</h3>
+							<p>Desert is everywhere</p>
+						</div>
+					</div>
+					<div class="item">
+						<img src="imgs/Koala.jpg" alt="Koala" width="460" height="345">
+						<div class="carousel-caption">
+							<h3>Hydrangeas</h3>
+							<p>Hydrangeas is a kind of flower</p>
+						</div>
+					</div>
+					<div class="item">
+						<img src="imgs/Tulips.jpg" alt="Tulips" width="460" height="345">
+						<div class="carousel-caption">
+							<h3>Hydrangeas</h3>
+							<p>Hydrangeas is a kind of flower</p>
+						</div>
+					</div>
+				</div>
+				<a href="#myCarousel" class="left carousel-control" role="button" data-slide="prev">
+					<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      				<span class="sr-only">Previous</span>
+				</a>
+				<a href="#myCarousel" class="right carousel-control" role="button" data-slide="next">
+					<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+					<span class="sr-only">Next</span>
+				</a>
+			</div>
+		</div>
+		<div class="container">
+			<h2>Column Sizing</h2>
+			<p>The form below shows input element with different widths</p>
+			<form role="form">
+				<div class="form-group">
+					<div class="col-xs-2">
+						<label for="ex1">col-xs-2</label>
+						<input class="form-control" id="ex1" type="text">
+					</div>
+					<div class="col-xs-3">
+						<label for="ex2">col-xs-3</label>
+						<input class="form-control" id="ex2" type="text">
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="container">
+			<h2>Select Sizing</h2>
+			<p>The form below shows select elements with different heights using input-lg and .input-sm</p>
+			<form role="form">
+				<div class="form-group">
+					<label for="sel1">input-lg</label>
+					<select id="sel1" class="form-control input-lg">
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="sel2">input-sm</label>
+					<select id="sel2" class="form-control input-sm">
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+					</select>
+				</div>
+			</form>
+		</div>
+		<div class="container">
+			<h2>Input Sizing</h2>
+			  <p>The form below shows input elements with different heights using .input-lg and .input-sm:</p>
+			  <form role="form">
+			    <div class="form-group">
+			      <label for="inputdefault">Default input</label>
+			      <input class="form-control" id="inputdefault" type="text">
+			    </div>
+			    <div class="form-group">
+			      <label for="inputlg">input-lg</label>
+			      <input class="form-control input-lg" id="inputlg" type="text">
+			    </div>
+			    <div class="form-group">
+			      <label for="inputsm">input-sm</label>
+			      <input class="form-control input-sm" id="inputsm" type="text">
+			</div>
+		</div>
+		<div class="container">
+			<h2>Horizontal Form: control states</h2>
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label class="col-sm-2 control-label">Focused</label>
+					<div class="col-sm-10">
+						<input class="form-control" id="focusedInput" type="text" value="Click to focus...">
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="inputPassword" class="control-label col-sm-2">Disabled</label>
+					<div class="col-sm-10">
+						<input class="form-control" id="disabledInput" type="text" placeholder="Disabled Input Here..." disabled>
+					</div>
+				</div>
+				<fieldset disabled>
+					<div class="form-group">
+				        <label for="disabledTextInput" class="col-sm-2 control-label">Disabled input and select list (Fieldset disabled)</label>
+				        <div class="col-sm-10">
+				          <input type="text" id="disabledTextInput" class="form-control" placeholder="Disabled input">
+				        </div><br/><br/>
+				        <div class="col-sm-8">
+				          <select id="disabledSelect" class="form-control">
+				            <option>Disabled select</option>
+				          </select>
+				        </div>
+				      </div>
+				</fieldset>
+				<div class="form-group has-success has-feedback">
+					<label class="col-sm-2 control-label" for="inputSuccess">Input with success and glyphicon</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputSuccess">
+						<span class="glyphicon glyphicon-ok form-control-feedback"></span>
+					</div>
+				</div>
+				<div class="form-group has-warning has-feedback">
+					<label class="col-sm-2 control-label" for="inputSuccess">Input with success and glyphicon</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputSuccess">
+						<span class="glyphicon glyphicon-warning-sign form-control-feedback"></span>
+					</div>
+				</div>
+				<div class="form-group has-error has-feedback">
+					<label class="col-sm-2 control-label" for="inputSuccess">Input with success and glyphicon</label>
+					<div class="col-sm-10">
+						<input type="text" class="form-control" id="inputSuccess">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div>
+				</div>
+			</form>
+		</div>
+		<!---------------------------------------------->
+		<div class="container">
+		  <h2>Horizontal form with static control</h2>
+		  <form class="form-horizontal" role="form">
+		    <div class="form-group">
+		      <label class="control-label col-sm-2" for="email">Email:</label>
+		      <div class="col-sm-10">
+		        <p class="form-control-static">someone@example.com</p>
+		      </div>
+		    </div>
+		    <div class="form-group">
+		      <label class="control-label col-sm-2" for="pwd">Password:</label>
+		      <div class="col-sm-10">          
+		        <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+		      </div>
+		    </div>
+		    <div class="form-group">        
+		      <div class="col-sm-offset-2 col-sm-10">
+		        <button type="submit" class="btn btn-default">Submit</button>
+		      </div>
+		    </div>
+		  </form>
+		</div>
+		<div class="container" id="selectDiv">
+			<h2>Form Control: Select</h2>
+			<p>The form below contains two dropdown menus:</p>
+			<form class="form-inline" role="form">
+				<div class="form-group">
+					<label for="sel1">Select List:</label>
+					
+					<select class="form-control" id="sel1">
+						<option>1</option>
+						<option>2</option>
+						<option>3</option>
+						<option>4</option>
+					</select></div>
+				</form>
+				<br/><br/><br/>
+				<form role="form">
+				<label for="sel2">Multiple Select list</label>
+				<select id="sel2" class="form-control" multiple>
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+					<option>4</option>
+					<option>5</option>
+				</select>
+			</form>
+		</div>
+		<div class="container" id="radioButtons">
+			<form role="form">
+				<div class="radio">
+					<label>
+						<input type="radio" name="optradio">Option 1
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="optradio">Option 2
+					</label>
+				</div>
+				<div class="radio disabled">
+					<label>
+						<input type="radio" name="optradio" disabled>Option 3
+					</label>
+				</div>
+			</form>
+			<form role="form">
+				<label class="radio-inline">
+					<input type="radio" name="optradio">Option 1
+				</label>
+				<label class="radio-inline">
+					<input type="radio" name="optradio">Option 2
+				</label>
+				<label class="radio-inline disabled">
+					<input type="radio" name="optradio" disabled>Option 3
+				</label>
+			</form>
+		</div>
+		<div class="container">
+			<h2>Form Control: inline Checkbox</h2>
+			<form role="form">
+				<label class="checkbox-inline">
+					<input type="checkbox" value=""/>Option 1
+				</label>
+				<label class="checkbox-inline">
+					<input type="checkbox" value=""/>Option 2
+				</label>
+				<label class="checkbox-inline">
+					<input type="checkbox" value=""/>Option 3
+				</label>
+			</form>
+			<h2>Horizontal Form</h2>
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="comment" class="control-label col-sm-2">Comment:</label>
+					<div class="col-sm-4">
+					<textarea id="comment" class="form-control" rows="5"></textarea></div>
+				</div>
+			</form>
+			<br/>
+			<form class="form">
+				<div class="checkbox">
+					<label><input type="checkbox" value=""/>Option 1</label>
+				</div>
+				<div class="checkbox">
+					<label><input type="checkbox" value=""/>Option 2</label>
+				</div>
+				<div class="checkbox disabled">
+					<label><input type="checkbox" value="" disabled/>Option 3</label>
+				</div>
+			</form>
+		</div>
+		<div class="container">
+			<h2>Horizontal Form</h2>
+			<div class="form-horizontal" role="form">
+				<div class="form-group">
+					<label class="control-label col-sm-2">Email:</label>
+					<div class="col-sm-4">
+						<input type="email" class="form-control" id="email" placeholder="Enter Email">
+					</div>
+				</div>
+			</div>
+			<h2>Inline Form</h2>
+			<form class="form-inline" role="form">
+				<div class="form-group">
+					<label for="email">Email: </label>
+					<input type="email" class="form-control" id="email" placeholder="Enter email">
+				</div>
+				&nbsp;
+				<div class="form-group">
+					<label for="pwd">Password: </label>
+					<input type="password" class="form-control" id="pwd" placeholder="Enter password">
+				</div>
+				 <div class="checkbox">
+      <label><input type="checkbox"> Remember me</label>
+    
+    <button type="submit" class="btn btn-default">Submit</button></div>
+			</form>
+			<h2>Vertical basic form</h2>
+			<form role="form">
+				<div class="form-group">
+					<label for="email">Email: </label>
+					<input type="email" class="form-control" id="email" placeholder="Enter email">
+				</div>
+				<div class="form-group">
+					<label class="sr-only" for="pwd">Password: </label>
+					<input type="password" class="form-control" id="pwd" placeholder="Enter password">
+				</div>
+				<div class="checkbox">
+      				<label><input type="checkbox"> Remember me</label>
+  				</div>
+    			<button type="submit" class="btn btn-default">Submit</button>
+			</form>
+		</div>
+		<br/>
+		<div class="container">
+			<ul class="list-group">
+				<li class="list-group-item active">
+					<h4 class="list-group-item-heading">First List Item Heading</h4>
+					<p class="list-group-item-text">First List Group Text</p>
+				</li>
+				<li class="list-group-item">
+					<h4 class="list-group-item-heading">Second List Item Heading</h4>
+					<p class="list-group-item-text">Second List Group Text</p>
+				</li>
+			</ul>
+			<div class="list-group">
+			    <a href="#" class="list-group-item list-group-item-success">First item</a>
+			    <a href="#" class="list-group-item list-group-item-info">Second item</a>
+			    <a href="#" class="list-group-item list-group-item-warning">Third item</a>
+			    <a href="#" class="list-group-item list-group-item-danger">Fourth item</a>
+			  </div>
+			  <br/>
+			<ul class="list-group">
+				<li class="list-group-item"><span class="badge">12</span>New</li>
+				<li class="list-group-item"><span class="badge">5</span>Deleted</li>
+				<li class="list-group-item"><span class="badge">3</span>Warnings</li>
+			</ul>
+			<div class="list-group">
+				<a href="#" class="list-group-item active">First Item</a>
+				<a href="#" class="list-group-item">First Item</a>
+				<a href="#" class="list-group-item">First Item</a>
+			</div>
+		</div>
+		<div class="container">
+			<h2>Pagination - Active State</h2>
+			<p>Add class .active to let the user know which page she is on:</p>
+			<ul class="pagination pagination-lg">
+				<li class="disabled"><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li class="active"><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+			</ul>
+			<ul class="pagination">
+				<li class="disabled"><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li class="active"><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+			</ul>
+			<ul class="pagination pagination-sm">
+				<li class="disabled"><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li class="active"><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+			</ul>
+			<br/>
+			<ul class="pager">
+				<li class="previous"><a href="#"><</a></li>
+				<li class="disabled"><a href="#">1</a></li>
+				<li><a href="#">2</a></li>
+				<li class="active"><a href="#">3</a></li>
+				<li><a href="#">4</a></li>
+				<li class="next"><a href="#">></a></li>
+			</ul>
+		</div>
+		<div class="container">
+			<h2>Basic Progress bar</h2>
+			<div class="progress">
+				<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+					70%
+				</div>
+			</div>
+			<br/>
+				<div class="progress">
+					<div class="progress-bar progress-bar-success" role="progressbar" style="width:40%">Fress Space</div>
+					<div class="progress-bar progress-bar-warning" role="progressbar" style="width:30%">Warning</div>
+					<div class="progress-bar progress-bar-danger" role="progressbar" style="width:30%">Danger</div>
+				</div>
+		</div>
+		<div class="container">
+			<h2>Badges</h2>
+			<span class="badge badge-error" style="font-size:30px">new</span>
+		</div>
+		<div class="container">
+		  <h2>Glyphicon Examples</h2>
+		  <p>Envelope icon: <span class="glyphicon glyphicon-envelope"></span></p>    
+		  <p>Envelope icon as a link:
+		    <a href="#"><span class="glyphicon glyphicon-envelope"></span></a>
+		  </p>
+		  <p>Search icon: <span class="glyphicon glyphicon-search"></span></p>
+		  <p>Search icon on a button:
+		    <button type="button" class="btn btn-default">
+		      <span class="glyphicon glyphicon-search"></span> Search
+		    </button>
+		  </p>
+		  <p>Search icon on a styled button:
+		    <button type="button" class="btn btn-primary">
+		      <span class="glyphicon glyphicon-search"></span> Search
+		    </button>
+		  </p>
+		  <p>Print icon: <span class="glyphicon glyphicon-print"></span></p>      
+		  <p>Print icon on a styled link button:
+		    <a href="#" class="btn btn-danger btn-lg">
+		      <span class="glyphicon glyphicon-print"></span> Print 
+		    </a>
+		  </p> 
+		</div>
+		<div class="container">
+			<h2>Dropdown Menu Button</h2>
+			<button class="btn btn-primary">Apple</button>
+			<button class="btn btn-success">Samsung</button>
+			<div class="btn-group">
+				<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+					Sony <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">Tablet</a></li>
+					<li><a href="#">Smartphone</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="container">
+			<h2>Button Group</h2>
+			<div class="btn-group  btn-group-sm">
+				<button type="button" class="btn btn-primary">Sony</button>
+				<button type="button" class="btn btn-info">HP</button>
+				<button type="button" class="btn btn-success">Lenove</button>
+			</div>
+		</div>
+		<div class="container">
+		  <h2>Button Styles</h2>
+		  <p>Colored Buttons</p>
+		  <a href="#" class="btn btn-link">Click Here</a>
+		  <input type="button" class="btn btn-info" value="Input Button">
+		  <input type="submit" class="btn btn-primary" value="Submit Button">
+		  <br/>
+		  <br/>
+		  <div class="btn-group">
+		  <button type="button" class="btn btn-default">Default</button>
+		  <button type="button" class="btn btn-primary btn-lg">Primary</button>
+		  <button type="button" class="btn btn-success btn-md">Success</button>
+		  <button type="button" class="btn btn-info btn-sm">Info</button>
+		  <button type="button" class="btn btn-warning btn-xs">Warning</button>
+</div>
+		  <button type="button" class="btn btn-danger btn-block">Danger</button>
+<button type="button" class="btn btn-danger btn-block disabled">Danger</button>
+		  <button type="button" class="btn btn-link disabled">Link</button>
+		  <button type="button" class="btn btn-link active">Link</button>       
+		</div>
+		<div class="container">
+			<div class="page-header">
+				<h1>Example Page Header</h1>
+			</div>
+			<p>This is some text.</p>
+			<p>This is another text.</p>
+		</div>
+		<div class="jumbotron">
+		  <h1>Bootstrap Tutorial</h1> 
+		  <p>Bootstrap is the most popular HTML, CSS, and JS framework for developing responsive,
+		  mobile-first projects on the web.</p> 
+		</div>
+		<div class="container">
+			<div class="jumbotron">
+				<h1>Bootstrap Tutorial</h1>
+				<p>Bootstrap is the most popular HTML, CSS, and JS framework for developing responsive, mobile-first projects on the web.</p>
+			</div>
+			<p>This is some text.</p>
+			<p>This is another text.</p>
+		</div>
+		<div class="container">
+			<h2>Image Gallery</h2>
+			<p>Several Images from my Laptop</p>
+			<div class="row">
+				<div class="col-md-3">
+					<a href="imgs/desert.jpg" class="thumbnail">
+						<p>Desert</p>
+						<img src="imgs/desert.jpg" alt="Desert" width="300px" height="200px">
+					</a>
+				</div>
+				<div class="col-md-3">
+					<a href="/Bootstrap_Handson/imgs/Chrysanthemum.jpg" class="thumbnail">
+						<p>Desert</p>
+						<img src="/Bootstrap_Handson/imgs/Chrysanthemum.jpg" alt="Chrysanthemum" width="300px" height="200px">
+					</a>
+				</div>
+				<div class="col-md-3">
+					<a href="/Bootstrap_Handson/imgs/Koala.jpg" class="thumbnail">
+						<p>Desert</p>
+						<img src="/Bootstrap_Handson/imgs/Koala.jpg" alt="Koala" width="300px" height="200px">
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="container">
+			<h2>Rounded Corners</h2>
+			<p>the .img-rounded class adds rounded corners in images</p>
+			<img src="imgs/desert.jpg" class="img-circle" alt="Desert" width="500" height="500">
+			<img src="imgs/desert.jpg" class="img-rounded" alt="Desert" width="500" height="500">
+			<img src="imgs/desert.jpg" class="img-responsive" alt="Desert" width="500" height="500">
+		</div>
+		<div class="container">
+			<h2>This is a bordered table</h2>
+			<p>.table-bordered class</p>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Email</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="success">
+			        <td>John</td>
+			        <td>Doe</td>
+			        <td>john@example.com</td>
+			      </tr>
+			      <tr class="info">
+			        <td>Mary</td>
+			        <td>Moe</td>
+			        <td>mary@example.com</td>
+			      </tr>
+			      <tr class="danger">
+			        <td>July</td>
+			        <td>Dooley</td>
+			        <td>july@example.com</td>
+			      </tr>
+			      <tr class="active">
+			        <td>Mary</td>
+			        <td>Moe</td>
+			        <td>mary@example.com</td>
+			      </tr>
+			      <tr class="warning">
+			        <td>July</td>
+			        <td>Dooley</td>
+			        <td>july@example.com</td>
+			      </tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="container">
+			<h2>This is a bordered table</h2>
+			<p>.table-bordered class</p>
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Email</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+			        <td>John</td>
+			        <td>Doe</td>
+			        <td>john@example.com</td>
+			      </tr>
+			      <tr>
+			        <td>Mary</td>
+			        <td>Moe</td>
+			        <td>mary@example.com</td>
+			      </tr>
+			      <tr>
+			        <td>July</td>
+			        <td>Dooley</td>
+			        <td>july@example.com</td>
+			      </tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="container-fluid">
+		  <h1>My First Bootstrap Page</h1>
+		  <p>This is some text.</p> 
+		</div>
+		<br/>
+		<div class="row">
+		    <div class="col-sm-4" style="background-color:lavender;">.col-sm-4</div>
+		    <div class="col-sm-4" style="background-color:lavenderblush;">.col-sm-4</div>
+		    <div class="col-sm-4" style="background-color:lavender;">.col-sm-4</div>
+		    </div>
+		    <div class="row">
+		    <div class="col-sm-4" style="background-color:lavender;">.col-sm-4</div>
+  			<div class="col-sm-8" style="background-color:lavenderblush;">.col-sm-8</div>
+		 </div>
+		 <br/>
+		<div class="container">
+			  <h1>h1 Bootstrap heading (36px)<small>text - subheading</small></h1>
+			  <h2>h2 Bootstrap heading (30px)<small>text - subheading</small></h2>
+			  <h3>h3 Bootstrap heading (24px)<small>text - subheading</small></h3>
+			  <h4>h4 Bootstrap heading (18px)<small>text - subheading</small></h4>
+			  <h5>h5 Bootstrap heading (14px)<small>text - subheading</small></h5>
+			  <h6>h6 Bootstrap heading (12px)<small>text - subheading</small></h6>
+		</div>
+		<div class="container">
+			<p class="h1">BlackQuotes</p>
+			<p>
+				<span>AAA BBB <abbr title="Who are you?">CCC</abbr> DDD EEE FFF <mark>GGG</mark>
+				</span>
+			</p>
+			<blockquote class="pull-right">
+			    <p>For 50 years, WWF has been protecting the future of nature. The world's leading conservation organization, WWF works in 100 countries and is supported by 1.2 million members in the United States and close to 5 million globally.</p>			    
+			    <footer>From WWF's website</footer>
+		  	</blockquote>
+		</div>
+		<div class="container">
+		  <h1>Description Lists</h1>    
+		  <p>The dl element indicates a description list:</p>
+		  <dl>
+		    <dt>Coffee</dt>
+		    <dd>- black hot drink</dd>
+		    <dt>Milk</dt>
+		    <dd>- white cold drink</dd>
+		  </dl>     
+		</div>
+		<div class="container">
+			<h1>Code Snippets</h1>
+			<p>Inline Snippets of code should be embedded in the code element</p>
+			<p>The following HTML elements: <code>span</code>, <code>section</code>, and <code>div</code> defines a section in a document.</p>
+		</div>
+		<div>
+		  <h1>Keyboard Inputs</h1>
+		  <p>To indicate input that is typically entered via the keyboard, use the kbd element:</p>
+		  <p>Use <kbd>ctrl + p</kbd> to open the Print dialog box.</p>
+		</div>
+		<div class="container">
+			<h1>Multiple Code Lines</h1>
+			<p>For multiple lines of code, use the pre element:</p>
+			<pre>
+				Text in a pre element
+			is displayed in a fixed-width
+			font, and it preserves
+			both      spaces and
+			line breaks.
+			</pre>
+		</div>
+		<div class="container">
+		  <h2>Contextual Colors</h2>
+		  <p>Use the contextual classes to provide "meaning through colors":</p>
+		  <p class="text-muted">This text is muted.</p>
+		  <p class="text-primary">This text is important.</p>
+		  <p class="text-success">This text indicates success.</p>
+		  <p class="text-info">This text represents some information.</p>
+		  <p class="text-warning">This text represents a warning.</p>
+		  <p class="text-danger">This text represents danger.</p>
+		  <br/>
+		  <p class="bg-primary">This background is muted.</p>
+		  <p class="bg-success">This background is muted.</p>
+		  <p class="bg-info">This background is muted.</p>
+		  <p class="bg-warning">This background is muted.</p>
+		  <p class="bg-danger">This background is muted.</p>
+		</div>
+		<div class="container">
+	      <h2>Typography</h2>
+	      <p class="text-left">Left-aligned text.</p>
+	      <p class="text-right">Right-aligned text.</p>      
+	      <p class="text-center">Center-aligned text.</p>
+	      <p class="text-justify">Justified text. Justified text. Justified text. Justified text. Justified text. Justified text.</p>      
+	      <p class="text-nowrap">No wrap text. No wrap text. No wrap text. No wrap text.</p>
+	      <p><strong>Tip:</strong> Try to resize the browser window to see the behaviour of justify and nowrap.</p>      
+	    </div>
+	    <div class="container">
+	      <h2>Typography</h2>
+	      <p>Use the .dl-horizontal class line up the description list side-by-side when the browser window expands:</p>
+	      <dl class="dl-horizontal">
+	        <dt>Coffee</dt>
+	        <dd>- black hot drink</dd>
+	        <dt>Milk</dt>
+	        <dd>- white cold drink</dd>
+	      </dl>     
+	      <p><strong>Tip:</strong> Try to resize the browser window to see the behaviour of the description list.</p>      
+	    </div>
+	      <div class="container">
+		      <h2>Code</h2>    
+		      
+		      <p>For multiple lines of code, use the pre element:</p>
+		      <pre>Text in a pre element
+		      is displayed in a fixed-width
+		      font, and it preserves
+		      both      spaces and
+		      line breaks.</pre>
+
+		      <p>If you add the .pre-scrollable class, the pre element gets a max-height of 350px and provides a y-axis scrollbar:</p>
+		      <pre class="pre-scrollable">Text in a pre element
+		      is displayed in a fixed-width
+		      font, and it preserves
+		      both      spaces and
+		      line breaks.
+		      asdfsdf
+		      sdfsdf
+		      sdf</pre>
+		  </div>
+		  <div class="container">
+			  <h2>Striped Rows</h2>
+			  <p>The .table-striped class adds zebra-stripes to a table:</p>            
+			  <table class="table table-striped">
+			    <thead>
+			      <tr>
+			        <th>Firstname</th>
+			        <th>Lastname</th>
+			        <th>Email</th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			      <tr>
+			        <td>John</td>
+			        <td>Doe</td>
+			        <td>john@example.com</td>
+			      </tr>
+			      <tr>
+			        <td>Mary</td>
+			        <td>Moe</td>
+			        <td>mary@example.com</td>
+			      </tr>
+			      <tr>
+			        <td>July</td>
+			        <td>Dooley</td>
+			        <td>july@example.com</td>
+			      </tr>
+			    </tbody>
+			  </table>
+			</div>
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap-datepicker.min.js"></script>
+		<script type="text/javascript">
+			$('#datePickerC').datepicker({
+			    autoclose: true
+			});
+		</script>
+	</body>
+</html>

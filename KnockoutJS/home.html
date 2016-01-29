@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<head>
+	<title>KnockoutJS</title>
+</head>
+<body>
+	<div id="numberOfClickDiv">
+		<div>You've clicked <span data-bind='text: numberOfClicks'>&nbsp;</span> times</div>
+	 
+		<button data-bind='click: registerClick, disable: hasClickedTooManyTimes'>Click me</button>
+	 
+		<div data-bind='visible: hasClickedTooManyTimes'>
+		    That's too many clicks! Please stop before you wear out your fingers.
+		    <button data-bind='click: resetClicks'>Reset clicks</button>
+		</div>
+	</div>
+	<br/>
+	<br/>
+	<br/>
+	<form data-bind="submit: addItem" id="addItemForm">
+	    New item:
+	    <input data-bind='value: itemToAdd, valueUpdate: "afterkeydown"' />
+	    <button type="submit" data-bind="enable: itemToAdd().length > 0">Add</button>
+	    <p>Your items:</p>
+	    <select multiple="multiple" width="50" data-bind="options: items"> </select>
+	</form>
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/knockout-3.3.0.js"></script>
+	<script type="text/javascript">
+		var ClickCounterViewModel = function() {
+		    this.numberOfClicks = ko.observable(0);
+		 
+		    this.registerClick = function() {
+		        this.numberOfClicks(this.numberOfClicks() + 1);
+		    };
+		 
+		    this.resetClicks = function() {
+		        this.numberOfClicks(0);
+		    };
+		 
+		    this.hasClickedTooManyTimes = ko.pureComputed(function() {
+		        return this.numberOfClicks() >= 3;
+		    }, this);
+		};
+		 
+		ko.applyBindings(new ClickCounterViewModel(), document.getElementById("numberOfClickDiv"));
+
+
+		var SimpleListModel = function(items) {
+		    this.items = ko.observableArray(items);
+		    this.itemToAdd = ko.observable("");
+		    this.addItem = function() {
+		        if (this.itemToAdd() != "") {
+		            this.items.push(this.itemToAdd()); // Adds the item. Writing to the "items" observableArray causes any associated UI to update.
+		            this.itemToAdd(""); // Clears the text box, because it's bound to the "itemToAdd" observable
+		        }
+		    }.bind(this);  // Ensure that "this" is always this view model
+		};
+		
+		ko.applyBindings(new SimpleListModel(["Alpha", "Beta", "Gamma"]), document.getElementById('addItemForm'));
+	</script>
+</body>

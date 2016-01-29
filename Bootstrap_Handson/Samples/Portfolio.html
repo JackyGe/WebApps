@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+    
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="X-UA-Compatible" content="IE=10">
+        <title>Matt's Code</title>
+      <link rel="stylesheet" href="/bootstrap_handson/css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://mattscode.io/assets/css/animate.css">
+        <link href='http://fonts.googleapis.com/css?family=Exo+2:300' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="http://mattscode.io/assets/css/master.css">
+        <style type="text/css">
+            body,html{
+                background: #77ddc4; /* Old browsers */
+                background: -moz-radial-gradient(center, ellipse cover,  #77ddc4 0%, #05a2a8 100%); /* FF3.6+ */
+                background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#77ddc4), color-stop(100%,#05a2a8)); /* Chrome,Safari4+ */
+                background: -webkit-radial-gradient(center, ellipse cover,  #77ddc4 0%,#05a2a8 100%); /* Chrome10+,Safari5.1+ */
+                background: -o-radial-gradient(center, ellipse cover,  #77ddc4 0%,#05a2a8 100%); /* Opera 12+ */
+                background: -ms-radial-gradient(center, ellipse cover,  #77ddc4 0%,#05a2a8 100%); /* IE10+ */
+                background: radial-gradient(ellipse at center,  #77ddc4 0%,#05a2a8 100%); /* W3C */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#77ddc4', endColorstr='#05a2a8',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+                height:100%;
+                width:100%;
+                font-family: 'Exo 2', sans-serif;
+                background: url('http://tinderlight.github.io/mattscode/assets/img/bg.jpg');
+                background-position:center center;
+                
+            }
+            .sidebar{
+                width:20%;
+                height:100%;
+                background: #4D585E;
+                box-shadow:1px 0px 10px rgba(0,0,0,.4);
+                float:left;
+                background-image: url('../img/beaker.png');
+                background-repeat: no-repeat;
+                background-position:bottom center;
+                background-position-x: center;
+                background-position-y: 97%;
+                background-size: 40%;
+                overflow-y:hidden;
+                z-index:10;
+            }
+            .toggleSidebar{
+                background:#4D585E;
+                padding:.8em;
+                color:#fff;
+                position:absolute;
+                left:0;
+                box-shadow:1px 0px 10px rgba(0,0,0,.4);
+                top:10px;
+                z-index:20;
+            }
+            .loadingbar{
+                height:1em;
+                width:100%;
+            }
+            .toggleSidebar:hover{
+                color:#ccc;   
+            }
+            .sidebar .title{
+                margin:.7em;
+                color:#83AFC7;
+                font-weight:200;
+            }
+            .sidebar ul{
+                padding:0;
+                margin:1em;
+                margin-top:0;
+                max-height:700px;
+                overflow-y:auto;
+            }
+            .sidebar ul li{
+                list-style-type:none;
+                padding:.4em;
+            }
+            .sidebar ul li a{
+                width:100%;
+                height:100%;
+                color:#fff;
+            }
+            .sidebar ul li ul{
+                margin:0;
+                height:0;
+                overflow:hidden;
+                transition:height .5s ease-in-out;
+                -o-transition:height .5s ease-in-out;
+                -moz-transition:height .5s ease-in-out;
+                -webkit-transition:height .5s ease-in-out;
+            }
+            .sidebar ul li ul li a{
+                color:#999;   
+            }
+            .heightlock{
+                height:80%;   
+                overflow-y:auto;
+            }
+            .right{
+                float:right;
+            }
+            .white{
+                color:#fff;
+                font-size:10pt;
+            }
+            .screenestate{
+                height:100%;
+                padding:1em;
+                width:80%;
+                float:right;
+                position:relative;
+                overflow:hidden;
+            }
+            .window{
+                width:600px;
+                min-width:200px;
+                min-height:450px;
+                background:#fff;
+                box-shadow:2px 2px 5px rgba(0,0,0,.3);
+                border:5px solid #4D585E;
+                transition: width .5s ease-in-out, height .5s ease-in-out;
+                -moz-transition: width .5s ease-in-out, height .5s ease-in-out;
+                -o-transition: width .5s ease-in-out, height .5s ease-in-out;
+                -webkit-transition: width .5s ease-in-out, height .5s ease-in-out;
+                overflow:hidden;
+                position:absolute;
+                top:0;
+                left:0;
+            }
+            .inputlabel{
+                font-weight:100;
+                color:#ccc;
+            }
+            .window .menu{
+                height:2em;
+                background:#4D585E;
+            }
+            .onethird{
+                width:33%;
+                float:left;
+                
+            }
+            .windowTitle{
+                text-align:center;
+                color:#fff;
+                font-weight:bold;
+                cursor:pointer;
+            }
+            .window button{
+                border:none;
+                background:transparent;
+                color:#fff;
+                float:right;
+                margin:0;
+                padding:3px 5px 3px 5px;
+                font-size:15px;
+                outline-width: 0px;
+            }
+            .window button:hover{
+                background:#333;
+                color:#fff;
+            }
+            .window button:focus{
+                outline: none;   
+            }
+            .moremenu{
+                position:absolute;
+                height:1.8em;
+                width:100%;
+                background:#eee;
+                border-bottom:1px solid #ddd;
+                padding:.2em;
+            }
+            .moremenu ul{
+                margin:0;
+                padding:0;
+                list-style: none;
+                position: relative;
+                display: inline-table;
+            }
+            .moremenu ul li{
+                display:inline-block;
+                float:left;
+            }
+            .moremenu ul li a{
+                padding-right:1em;
+                padding-left:1em;
+                color:#999;
+                text-decoration:none;
+            }
+
+            .moremenu ul li:hover{
+                background:#ccc;   
+            }
+            .moremenu ul li a:hover{
+                color:#444;
+            }
+            .moremenu ul li:after {
+                content: "";
+                clear: both;
+                display: block;
+            }
+            .moremenu ul li > ul li{
+                display:none; 
+            }
+            .moremenu ul li{
+                float:none;   
+                position:relative;
+            }
+            .moremenu ul li:hover > ul li{
+                display:block;   
+
+            }
+
+            .browserview{
+                overflow:hidden;
+                overflow-x:hidden;
+                overflow-y:hidden;
+                height:100%;
+                width:100%;
+                position:absolute;
+                top:5.9em;
+                left:0px;
+                right:0px;
+                bottom:0px;
+            }
+            .loading{
+                position:absolute;
+                top:0;
+                left:0;
+                right:0;
+                bottom:0;
+                background:#555;
+                z-index:40;
+                padding-top:20%;
+            }
+            .hireme{
+                position:absolute;
+                top:10px;
+                right:10px;
+                font-size:40px;
+                color:#fff;
+            }
+            .tipjar{
+                width:300px;
+                height:80px;
+                position:absolute;
+                bottom:10px;
+                right:10px;
+                background:#4D585E;
+                color:#fff;
+                padding:1em;
+            }
+            .url{
+                width:100%;
+                height:2.3em;
+                background:#eee;
+                border-bottom:1px solid #ddd;
+                position:relative;
+            }
+            .url input{
+                width:90%;
+                margin-top:-1em;
+                background:transparent;
+                border:none;
+                outline:none;
+            }
+            .url input:focus{
+                outline:none;   
+            }
+            .subloader{
+                width:30%;
+                height:1em;
+                border-radius:0;
+                margin:.3em;
+                margin-left:0;
+                position:absolute;
+                top:.3em;
+                right:0;
+            }
+            .subloader .progress-bar{
+                width:100%;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="loading">
+            <p align="center">
+                <img src="http://mattscode.io/assets/img/beaker.png" alt="Loading..." style="width:150px;">
+            </p>
+            <div class="progress progress-striped active" style="width:140px;margin:0 auto;height:10px;border-radius:0;">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"> <span class="sr-only">45% Complete</span>
+
+                </div>
+            </div>
+            <p align="center" style="color:#999;">loading...</p>
+        </div>
+        <div class="sidebar">
+            <div class="heightlock">
+                <p class="title">Browse Projects</p>
+                <ul>
+                    <li><a href="#">About Me</a> <span class="glyphicon white glyphicon-plus right"></span>
+
+                        <ul>
+                            <li><a href="#" data-link="http://mattscode.io/profile.html">Profile</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Websites</a>  <span class="glyphicon white glyphicon-plus right"></span>
+
+                        <ul>
+                            <li><a href="#" data-link="http://www.baidu.com">Acixs</a>
+                            </li>
+                            <li><a href="#" data-link="http://tinderlight.com">Tinderlight</a>
+                            </li>
+                            <li><a href="#" data-link="http://12daysofindie.com">12 Days of Indie</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/Multicraft/">Multicraft</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Control Panels</a>  <span class="glyphicon white glyphicon-plus right"></span>
+
+                        <ul>
+                            <li><a href="#" data-link="http://66.85.175.201/starmap/">Starmap</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Web Projects</a>  <span class="glyphicon white glyphicon-plus right"></span>
+
+                        <ul>
+                            <li><a href="#" data-link="http://66.85.175.201/3dButtons/">3D Buttons</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/3DSwitch/">3D Switch</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/acixs/">New Acixs</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/bcl/">BCSS Lib</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/LaunchButton/">Launch Button</a>
+                            </li>
+                            <li><a href="#" data-link="http://66.85.175.201/rd_nav/matte">RD Navigation</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Design</a>  <span class="glyphicon white glyphicon-plus right"></span>
+
+                        <ul>
+                            <li><a href="#" data-link="http://ftbservers.com/uploads/banners/bec3ce8e-f4f2-4a35-b3b7-9a98993d4b2d.jpeg">8BitBlocks Banner</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <br>
+                <p class="title">Statistics</p>
+                <ul style="color:#fff;">
+                    <li>Cups of Coffee <span class="glyphicon glyphicon-tint white right"> 608</span>
+                    </li>
+                    <li>Vision Degration <span class="glyphicon glyphicon-eye-open white right"> 20%</span>
+                    </li>
+                    <li>Bugs Squashed <span class="glyphicon glyphicon-screenshot white right"> Lots!</span>
+                    </li>
+                </ul>
+                <br>
+                <p class="title">Stuff I Know</p>
+                <ul>
+                    <li style="color:#fff"><span class="glyphicon glyphicon-pushpin"></span> &nbsp; HTML5, CSS3, Sass, Slim HTML, jQuery, JavaScipt, PHP, MySQL, Python, AngularJS, jQueryUI, jQueryMobile, Bootstrap, Photoshop, Illustraitor, Shell Scripting, CentOS Server, Ubuntu Server.</li>
+                </ul>
+                <!-- <p class="title">Contact</p>
+                <ul>
+                    <form role="form">
+                      <div class="form-group">
+                        <label class="inputlabel">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                      </div>
+                      <div class="form-group">
+                        <label class="inputlabel">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+
+                      <button type="submit" class="btn btn-default btn-xs btn-success right">Submit</button>
+                    </form>
+                </ul>-->
+            </div>
+        </div>
+        <div class="screenestate"> 
+            <a href="#" class="toggleSidebar">
+                <span class='glyphicon glyphicon-list-alt' ></span>
+            </a>
+            <div class="window draggable scalable" onclick="$(this).css('z-index', windowz);windowz++;" data-scaled="false">
+                <div class="menu">
+                    <div class="onethird">&nbsp;</div>
+                    <div class="onethird windowTitle"> 
+                        <span>Project Browser</span>
+                    </div>
+                    <div class="onethird">
+                        <button class="exit" onclick="$(this).closest('.window').fadeOut()">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                        <button class="full" onclick="fullscreen($(this))">
+                            <span class="glyphicon glyphicon-fullscreen"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="url"> 
+                    <span class="glyphicon glyphicon-chevron-right" disabled="disabled" style="font-size:12pt;margin:5px 0 0 10px;"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="text" class="urlthingy">
+                    <div class="progress progress-striped active subloader">
+                        <div class="progress-bar" style="border-radius:0;" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"> 
+                            <span class="sr-only">45% Complete</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="moremenu">
+                    <ul>
+                        <li>
+                            <a href="#" class="reload" onclick="$(this).closest('.window').find('.browserview').attr( 'src', function ( i, val ) { return val; });">Reload</a>
+                        </li>
+                        <li>
+                            <a href="#" class="tab" onclick="window.open($(this).closest('.window').find('.browserview').attr( 'src'), '_blank');">Open in tab</a>
+                        </li>
+                        <li>
+                            <a href="#" class="reload" onclick="$(this).closest('.window').find('.browserview').attr( 'src', function ( i, val ) { var newsource='view-source:'+val; return newsource; });">Source</a>
+                        </li>
+                        <li>
+                            <a href="#">About</a>
+                        </li>
+                    </ul>
+                </div>
+                <iframe class="browserview" onload="loadstatus($(this));" src="http://www.acixs.com" frameborder="0" height="100%" width="100%"></iframe>
+            </div>
+        </div>
+        <div class="tipjar">
+            <p>Help fill my coffee mug <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5BPVVQ9U2GNQE" class="btn btn-xs right btn-success">Donate</a>
+            </p>
+            <div class="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">60% Satisfied <span class="sr-only">60% Complete (warning)</span>
+                </div>
+            </div>
+        </div>
+        <a href="mailto:contact.mattdylan@gmail.com" class="hireme">
+            <img src="http://tinderlight.github.io/mattscode/assets/img/hire.png" style="width:60px;" alt="">
+        </a>
+
+        <script type="text/javascript" src="/bootstrap_handson/js/jquery-1.11.1.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="/bootstrap_handson/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+
+          var windowz = 30;
+
+            function fullscreen(element){
+                if (element.closest('.window').attr('data-scaled') === "false"){
+                    element.closest('.window')
+                    .css('width', '100%')
+                    .css('height', '100%')
+                    .attr('data-scaled', 'true');
+                } else{
+                    element.closest('.window')
+                    .css('width', '800px')
+                    .css('height', '600px')
+                    .attr('data-scaled', 'false');
+                }
+            }
+            var movementStrength = 5;
+            var height = movementStrength / $(window).height();
+            var width = movementStrength / $(window).width();
+
+            $("html").mousemove(function(e){
+                
+                      var pageX = e.pageX - ($(window).width() / 2);
+                      var pageY = e.pageY - ($(window).height() / 2);
+
+                      var newvalueX = width * pageX * -1;
+                      var newvalueY = height * pageY * -1;
+
+                      $('body').css("background-position", (50+newvalueX)+"% "+(50+newvalueY)+"%"); 
+            });
+
+            function loadstatus(frame){
+                //alert(frame + 'loaded');
+                $('.window').first().find('.subloader').hide('slide',{direction:'right'},500);
+            }
+
+            $(document).ready(function(){
+                var $reload = $('.reload'),
+                    $tab = $('.tab'),
+                    windowIterate = 0,
+                    $toggleSidebar = $('.toggleSidebar'),
+                    $sidebar = $('.sidebar'),
+                    sidebarToggled = false;
+                
+                var m = false,
+                    u = false,
+                    z = false;
+                
+                setTimeout(function(){
+                    $('#pictureframe').hide();
+                },3400);
+                
+                $('body').keypress(function( event ) {
+                    if(event.which === 109) m = true;
+                    if(event.which === 117) u = true;   
+                    if(event.which === 122) z = true;   
+                    if (m && u && z) alert('give me coffee money!');   
+                });
+                    
+                setInterval(function(){
+                    $('.hireme').toggleClass('animated bounce');
+                }, 3000);
+                
+                $toggleSidebar.click(function(){
+                    if(!sidebarToggled){
+                        $sidebar.addClass('animated bounceOutLeft');
+                        setTimeout(function(){
+                            $sidebar.css('width', '0px');
+                            $('.screenestate').css('width', '100%');
+                            sidebarToggled = true;
+                        }, 500);
+                    }else{
+                        $sidebar.css('width', '20%');
+                        $('.screenestate').css('width', '80%');
+                        sidebarToggled = false;
+                        $sidebar.removeClass('animated bounceOutLeft');
+                        $sidebar.addClass('animated bounceInleft');
+                    }
+                });
+                
+                (function(){
+                    $('.loading').hide();
+                    $('.sidebar').addClass('animated bounceInLeft');
+                    $('.toggleSidebar').addClass('animated bounceInLeft');
+                    $('.tipjar').addClass('animated bounceInRight');
+                })();
+                
+                $('.screenestate').find('.window').hide();
+
+                $('.draggable').draggable({
+                    containment: '.screenestate',
+                    handle: $(this).find('.menu')
+                }).resizable();
+                
+                $('.sidebar ul li').click(function(){
+                    if($(this).has('ul')){
+                        if($(this).find('ul').css('height') === '0px'){
+                            $(this).find('ul').css('height', 'auto');   
+                        }else{
+                            $(this).find('ul').css('height', '0');
+                        }
+                    }
+                });
+                
+                $('.sidebar ul li ul li').click(function(){
+                    windowIterate+=20;
+                    var link = $(this).find('a').attr('data-link');
+                    $('.window').last().clone()
+                        .draggable()
+                        .css({
+                            'top' : windowIterate+'px',
+                            'left': windowIterate+'px',
+                            'z-index' : windowIterate
+                        })
+                        .show()
+                        .prependTo('.screenestate')
+                        .find('.browserview')
+                        .attr('src', link);
+                        $('.window')
+                        .first()
+                        .find('.windowTitle')
+                        .html($(this).find('a').html());
+                        $('.window')
+                        .first()
+                        .find('.urlthingy')
+                        .val(link);
+                        $('.window')
+                        .first()
+                        .find('.subloader')
+                        .show();
+                }); 
+            });
+        </script>
+    </body>
+
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<head>
+	<title>Click Counter</title>
+	<style type="text/css">
+		body { font-family: arial; font-size: 14px; }
+		.liveExample { padding: 1em; background-color: #EEEEDD; border: 1px solid #CCC; max-width: 655px; }
+		.liveExample input { font-family: Arial; }
+		.liveExample b { font-weight: bold; }
+		.liveExample p { margin-top: 0.9em; margin-bottom: 0.9em; }
+		.liveExample select[multiple] { width: 100%; height: 8em; }
+		.liveExample h2 { margin-top: 0.4em; }
+	</style>
+</head>
+<body>
+	<div class="liveExample">
+		<div>
+			You've clicked <span data-bind="text: numberOfClicks">&nbsp;</span> times
+		</div>
+		<button data-bind="click: registerClick, disable: hasClickedTooManyTimes">Click Me</button>
+		<div data-bind="visible: hasClickedTooManyTimes">
+			That's too many clicks! Please stop before you wear out your fingers.
+			<button data-bind="click: resetClicks">Reset Clicks</button>
+		</div>
+	</div>
+
+	<br/>
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/knockout-3.3.0.js"></script>
+	<script type="text/javascript">
+		var ClickCounterViewModel = function(){
+			var self = this;
+			self.numberOfClicks = ko.observable(0);
+			self.registerClick = function(){
+				self.numberOfClicks(self.numberOfClicks()+1);
+			};
+			self.hasClickedTooManyTimes = ko.pureComputed(function(){
+					return self.numberOfClicks() >=3;
+			}, self);
+			self.resetClicks = function(){
+				self.numberOfClicks(0);
+			};
+		};
+
+		var clickCounterViewModel = new ClickCounterViewModel();
+		ko.applyBindings(clickCounterViewModel, document.getElementById("liveExample"));
+	</script>
+</body>

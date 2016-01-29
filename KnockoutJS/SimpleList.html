@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head>
+	<title>Simple List</title>
+	<style type="text/css">
+		body { font-family: arial; font-size: 14px; }
+		.liveExample { padding: 1em; background-color: #EEEEDD; border: 1px solid #CCC; max-width: 655px; }
+		.liveExample input { font-family: Arial; }
+		.liveExample b { font-weight: bold; }
+		.liveExample p { margin-top: 0.9em; margin-bottom: 0.9em; }
+		.liveExample select[multiple] { width: 100%; height: 8em; }
+		.liveExample h2 { margin-top: 0.4em; }
+	</style>
+</head>
+<body>
+	<div class='liveExample'>
+		<form data-bind="submit: addItem">
+			New Item:
+			<input data-bind="textInput: itemToAdd"/>
+			<button type="submit" data-bind="enable: itemToAdd().trim().length>0">Add</button>
+		</form>
+		<p>Your Items:</p>
+		<select multiple="multiple" width="50" data-bind="options: items, selectedOptions: selectedItems"></select>
+		<div>
+			<button data-bind="click: removeSelectedItems, enable: selectedItems().length>0">Remove</button>
+			<button data-bind="click:sortItems, enable: items().length>1">Sort</button>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/knockout-3.3.0.js"></script>
+	<script type="text/javascript">
+		var SimpleListViewModel = function(items){
+			var self = this;
+			self.items= ko.observableArray(items);
+			self.selectedItems = ko.observableArray();
+			self.itemToAdd=ko.observable("");
+			self.addItem = function(){
+				if(self.itemToAdd().trim()!=""&& self.items.indexOf(self.itemToAdd().trim())<0){
+					self.items.push(self.itemToAdd().trim());
+					self.itemToAdd("");
+				}
+			};
+			self.removeSelectedItems = function(){
+				self.items.removeAll(self.selectedItems());
+				self.selectedItems([]);
+			};
+			self.sortItems = function(){
+				self.items.sort();
+			};
+		};
+
+		var optionArray = ["Alpha", "Beta", "Gamma"];
+		var simpleListViewModel = new SimpleListViewModel(optionArray);
+		ko.applyBindings(simpleListViewModel);
+	</script>
+</body>

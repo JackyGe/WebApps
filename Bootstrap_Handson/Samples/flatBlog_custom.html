@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Flat Blog Custom</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=10">
+		<link rel="stylesheet" type="text/css" href="/bootstrap_handson/css/bootstrap.min.css">
+		<style type="text/css">
+			.borderClass{
+				border:2px solid red;
+				border-radius: 10%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1 id="header" class="text-primary">My Blog</h1>
+			<div class="btn-group pull-right" id="switch-view">
+			    <button class="btn btn-primary">
+			      <span class="glyphicon glyphicon-th-large"></span>
+			    </button>
+			    <button class="btn btn-primary active">
+			      <span class="glyphicon glyphicon-th-list active"></span>
+			    </button>
+			 </div>
+			<div class="row">
+			    <div class="col-xs-12 article-wrapper">
+			      <article>
+			        <a href="#" class="more">more</a>
+			        <div class="img-wrapper"><img src="http://lorempixel.com/150/150/fashion" alt="" /></div>
+			        <h1>Lorem ipsum dolor.</h1>
+			        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet ducimus totam quasi nam porro sed.</p>
+			      </article>
+			    </div>
+		    </div>
+		</div>
+		<br/>
+		<br/>
+		<div class="borderClass">
+			<p>saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+		</div>
+		<br/>
+		<br/>
+		<script type="text/javascript" src="/bootstrap_handson/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="/bootstrap_handson/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+				// JS only for the switch
+			$(function(){
+			  $("#switch-view").click(function(){
+			    $(this).find("button").toggleClass("active");
+			    $(".article-wrapper").toggleClass("bloc col-xs-12 col-xs-4");
+			  });
+			});
+		</script>
+	</body>
+</html>

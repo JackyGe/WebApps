@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JavaScript Calculator</title>
+	<meta charset="UTF-8"/>
+	
+	<STYLE>
+
+		#calc {
+			BORDER-TOP: black 1px solid; BORDER-RIGHT: black 1px solid; BORDER-BOTTOM: black 1px solid; TEXT-ALIGN: center; MARGIN: 20px; BORDER-LEFT: black 1px solid; BACKGROUND-COLOR: white; opacity: 0.8
+		}
+		#calc TABLE {
+			MARGIN-LEFT: auto; MARGIN-RIGHT: auto
+		}
+		TABLE {
+			BORDER-TOP: grey 1px solid; BORDER-RIGHT: grey 1px solid; BORDER-BOTTOM: grey 1px solid; TEXT-ALIGN: left; BORDER-LEFT: grey 1px solid
+		}
+		THEAD > TR {
+			BACKGROUND-COLOR: lightgrey
+		}
+		TH {
+			FONT-WEIGHT: bold; FONT-STYLE: italic; TEXT-ALIGN: left
+		}
+		TFOOT > TR > TD {
+			BORDER-TOP: black 3px double
+		}
+		TFOOT SPAN {
+			FONT-WEIGHT: bold; PADDING-LEFT: 3px
+		}
+		#button {
+			CURSOR: pointer; FONT-WEIGHT: bold
+		}
+	</STYLE>
+</head>
+<body>
+	<DIV id="calc">
+		<H1>JavaScript Calculator</H1>
+		<TABLE>
+			<THEAD>
+				<TR>
+					<TH>Variable</TH>
+					<TH>Value</TH>
+				</TR>
+			</THEAD>
+			<TBODY>
+				<TR>
+					<TD>a</TD>
+					<TD><INPUT id="number-a" value="0"></TD>
+				</TR>
+				<TR>
+					<TD>sign</TD>
+					<TD><INPUT id="sign" value=""></TD>
+				</TR>
+				<TR>
+					<TD>b</TD>
+					<TD><INPUT id="number-b" value="0"></TD>
+				</TR>
+			</TBODY>
+			<TFOOT>
+				<TR>
+					<TD><INPUT onclick="buttonClick()" id="button" type="button" value="Calculate"></TD>
+					<TD><SPAN id="result"></SPAN></TD>
+				</TR>
+			</TFOOT>
+		</TABLE>
+	</DIV>
+
+<SCRIPT>
+			//<Description>Reads the input from the html body's input fields, validates them and executes a calculation</Description> 	
+			//<Remarks>This method is being called when the button in the html body is clicked</Remarks>
+			function buttonClick() {
+				//Read the input values into variables
+				var a = document.getElementById('number-a').value;
+				var b = document.getElementById('number-b').value;
+				var sign = document.getElementById('sign').value;
+				
+	
+				//version 2 for validation of inputs
+				//this code is more complex to understand but shorter and easier to maintain - especially if more things are to be done in case the validation fails
+				
+				if(
+					//validate a and convert it to a number if the validation succeeds
+					!validate(a, isNumber, 'Please enter a valid number in \'a\'.', function(){
+						a = parseFloat(a); 
+					})
+					//
+					||
+					//validate b and convert it to a number if the validation succeeds
+					!validate(b, isNumber, 'Please enter a valid number in \'b\'.', function(){
+						b = parseFloat(b);
+					}) 
+					||
+					//validate sign
+					!validate(sign, isOperator, 'Please enter a valid operator (+ - * /) in \'sign\'.')
+				){
+					//end the function -> no other code is executed in this case
+					return; 
+				}
+				
+				//prepare the variable for the calculation result
+				var result = NaN;
+				
+				//select the function to call based on the operator in the sign variable
+				switch(sign){
+					case '+':
+						//execute the sum function and store the result in the result variable
+						result = sum(a, b);
+						break;
+					case '-':
+						//execute the difference function and store the result in the result variable
+						result = difference(a, b)
+						break;
+					case '*':
+						//execute the product function and store the result in the result variable
+						result = product(a, b);
+						break;
+					case '/':
+						//execute the division function and store the result in the result variable
+						result = division(a, b);
+						break;
+					default:
+						// don't do anything in this case!
+				}
+				
+				//write the calculation result into the respective html element
+				document.getElementById('result').innerHTML = result;
+			}
+
+			function sum(a, b){
+				return a + b;
+			}
+			
+			function difference(a, b) {
+				return a - b;
+			}
+			
+			function product(a, b){
+				return a * b;
+			}
+			
+			function division(a, b){
+				//if b is 0, this would lead to a 'division by zero' error -> return NaN (not a number) as result in this case
+				if(b == 0){ 
+					return NaN; 
+				}
+				else{
+					return a / b;
+				}
+			}
+			
+			//<Description>Executes a validation function on a value and displays an error message if the validation fails</Description>
+			//<Parameters>
+			//   <Parameter name='x'>The value that should be validated</Parameter>
+			//   <Parameter name='validationFunction'>The validation function - must accept one input parameter and return true or false</Parameter>
+			//   <Parameter name='onFalseMessage'>The error message that should be displayed in case the validation function returns false</Parameter>
+			//   <Parameter name='onTrueFunction'>optional method that should be executed in case the validation function returns true</Parameter>
+			//</Parameters>
+			//<Returns>The result of the validation function</Returns>
+			function validate(x, validationFunction, onFalseMessage, onTrueFunction){
+				var result = validationFunction(x);
+				if(!result){ alert(onFalseMessage); }
+				if(result && onTrueFunction != undefined){ onTrueFunction(); }
+				return result;
+			}
+			
+			//<Description>Checks if a string can be converted to a number</Description>
+			//<Parameters>
+			//   <Parameter name='n'>The string to check</Parameter>
+			//</Parameters>
+			//<Returns>true if the string can be converted, otherwise false</Returns>
+			function isNumber(n) {
+				return !isNaN(parseFloat(n)) && isFinite(n);
+			}
+			
+			//<Description>Checks if a string is a mathematic operator</Description>
+			//<Remarks>This function is not really necessary because the operator character is checked the same way in the buttonClick function's switch...case as well.
+			//It is only for the demonstration of the usage of functions.</Remarks>
+			//<Returns>true if the string is '+', '-', '*' or '/', otherwise false</Returns>
+			function isOperator(c){
+				switch(c){
+					case '+':
+					case '-':
+					case '*':
+					case '/':
+						return true;
+						break;
+					default:
+						return false;
+				}
+			}
+			
+		</SCRIPT>
+</body>
+</html>

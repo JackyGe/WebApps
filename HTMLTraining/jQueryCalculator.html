@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jQuery Calculator</title>
+	<meta charset="UTF-8"/>
+	
+	<STYLE>
+
+		#calc {
+			BORDER: black 1px solid;TEXT-ALIGN: center; MARGIN: 20px; BACKGROUND-COLOR: white; opacity: 0.8
+		}
+		#calc TABLE {
+			MARGIN-LEFT: auto; MARGIN-RIGHT: auto
+		}
+		TABLE {
+			BORDER-TOP: grey 1px solid; BORDER-RIGHT: grey 1px solid; BORDER-BOTTOM: grey 1px solid; TEXT-ALIGN: left; BORDER-LEFT: grey 1px solid
+		}
+		THEAD > TR {
+			BACKGROUND-COLOR: lightgrey
+		}
+		TH {
+			FONT-WEIGHT: bold; FONT-STYLE: italic; TEXT-ALIGN: left
+		}
+		TFOOT > TR > TD {
+			BORDER-TOP: black 3px double
+		}
+		TFOOT SPAN {
+			FONT-WEIGHT: bold; PADDING-LEFT: 3px
+		}
+		#button {
+			CURSOR: pointer; FONT-WEIGHT: bold
+		}
+	</STYLE>
+</head>
+<body>
+	<DIV id="calc">
+		<H1>jQuery Calculator</H1>
+		<TABLE>
+			<THEAD>
+				<TR>
+					<TH>Variable</TH>
+					<TH>Value</TH>
+				</TR>
+			</THEAD>
+			<TBODY>
+				<TR>
+					<TD>a</TD>
+					<TD><INPUT id="number-a" value="0"></TD>
+				</TR>
+				<TR>
+					<TD>sign</TD>
+					<TD><INPUT id="sign" value=""></TD>
+				</TR>
+				<TR>
+					<TD>b</TD>
+					<TD><INPUT id="number-b" value="0"></TD>
+				</TR>
+			</TBODY>
+			<TFOOT>
+				<TR>
+					<TD><INPUT onclick="buttonClick()" id="button" type="button" value="Calculate"></TD>
+					<TD><SPAN id="result"></SPAN></TD>
+				</TR>
+			</TFOOT>
+		</TABLE>
+	</DIV>
+	<SCRIPT type="text/javascript" src="/HTMLTraining/jquery/jquery-1.11.1.js"></SCRIPT>
+	<script>
+		//This method is being called when the button in the html body is clicked
+		function buttonClick() {
+			var operator = $("#sign").val();
+			var numberA = $("#number-a").val();
+			var numberB = $("#number-b").val();
+			var $resultElement = $("#result");
+			
+			//select the function to call based on the operator in the sign variable
+			if(isNumber(numberA) && isNumber(numberB)){
+				switch(operator){
+					case '+':
+						setValuetoSpan($resultElement, sum(numberA, numberB));
+						break;
+					case '-':
+						setValuetoSpan($resultElement, difference(numberA, numberB));
+						break;
+					case '*':
+						setValuetoSpan($resultElement, product(numberA, numberB));
+						break;
+					case '/':
+						if(numberB <= 0){
+							alert("Divisor must be larger than 0!");
+						}
+						else{
+							setValuetoSpan($resultElement, division(numberA, numberB));
+						}
+						break;
+					default:
+						alert("Please enter a correct mathematic operator!");
+				}
+			}
+			else{
+				alert("Please enter a correct number!");
+			}
+		}
+		
+		function sum(a, b){
+			return parseFloat(a) + parseFloat(b);
+		}
+		
+		function difference(a, b){
+			return parseFloat(a) - parseFloat(b);
+		}
+		
+		function product(a, b){
+			return parseFloat(a) * parseFloat(b);
+		}
+		
+		function division(a, b){
+			return parseFloat(a) / parseFloat(b);
+		}
+		
+		function isNumber(n) {
+			return !isNaN(parseFloat(n)) && isFinite(n);
+		}
+		
+		function setValuetoSpan(span, newContent){
+			span.text(newContent);
+		}
+		
+	</script>	
+</body>
+</html>

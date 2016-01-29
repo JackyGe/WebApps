@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>表单</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="css/bootstrap.min.css"/>
+		<style>
+			body{
+				padding: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- 选项卡组件（菜单项nav-tabs）-->
+		<ul id="myTab" class="nav nav-tabs" role="tablist">
+		    <li class="active"><a href="#bulletin" role="tab" data-toggle="tab">公告</a></li>
+		    <li><a href="#rule" role="tab" data-toggle="tab">规则</a></li>
+		    <li><a href="#forum" role="tab" data-toggle="tab">论坛</a></li>
+			<li><a href="#security" role="tab" data-toggle="tab">安全</a></li>
+			<li><a href="#welfare" role="tab" data-toggle="tab">公益</a></li>
+		</ul>
+		<!-- 选项卡面板 -->
+		<div id="myTabContent" class="tab-content">
+			<div class="tab-pane active" id="bulletin">公告内容面板</div>
+			<div class="tab-pane" id="rule">规则内容面板</div>
+			<div class="tab-pane" id="forum">论坛内容面板</div>
+			<div class="tab-pane" id="security">安全内容面板</div>
+			<div class="tab-pane" id="welfare">公益内容面板</div>
+		</div>
+		<br/>
+		<br/>
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	</body>
+</html>

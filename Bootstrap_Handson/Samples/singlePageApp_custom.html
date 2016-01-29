@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Single Page</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=10">
+	<link rel="stylesheet" type="text/css" href="/bootstrap_handson/css/bootstrap.min.css">
+	<style type="text/css">
+		.head { 
+			background: #000; 
+			border-bottom: 1px solid #333; 
+			height: 30px; 
+			width: 100%; 
+		}
+		
+		.nav > li > a:hover, .nav > li > a:focus {
+		    text-decoration: none;
+		    background-color: #555; /*Change rollover cell color here*/
+		  }
+	  	.head a{
+			color: white;
+			padding-top: 5px!important;
+			padding-bottom: 5px!important;
+		}
+
+		.body{
+			width:100%;
+		}
+		.search-input { 
+			display: inline; 
+			margin-left: 20px; 
+			margin-right: 0;
+			padding-top: 2px;
+		}
+		.search-btn{
+			padding:2px 5px;
+			margin-bottom: 2px;
+		}
+		.leftNav{
+			height: 100%;
+			min-height: 1px;
+			width: 150px;
+			float: left;
+			margin: 200px 30px;
+		}
+		.leftNavList{
+			margin-bottom: 20px;
+		}
+		.leftNavList li{
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            clear:both;
+            cursor: pointer;
+            height: 75px;
+            margin-bottom: 5px;
+            margin-left:10px;
+            margin-right: 10px;
+            position: relative;
+            text-align:center;
+            width: 130px;
+        }
+        .leftNavList li .active {
+            background:#555;
+            border:none;
+            height:85px;
+            width:133px;
+        }
+        .list-group-item{
+        	padding:0px!important;
+        }
+        .leftNavList a{
+            background-color: transparent;
+            color:#555;
+            display: table-cell;
+            font-size:14px;
+            font-weight:bold;   
+            height: 75px;
+            vertical-align:middle;
+            width: 130px;
+		}
+		.mainContent{
+			float: right;
+			width: 900px;
+			margin-top: 100px;
+		}
+		.clearfix:after { 
+		  content: "."; 
+		  display: block; 
+		  height: 0; 
+		  clear: both; 
+		  visibility: hidden; 
+		}
+		.clearfix { 
+		  display: inline-block;  
+		}
+		*html .clearfix {  
+		  height: 1%;  
+		} /* Hides from IE-mac \*/
+		.clearfix {  
+		  display: block;  
+		}
+	</style>
+</head>
+<body>
+	<div class="head">
+		<div class="container">
+			<div class="row">
+		        <div class="pull-right search-input">
+                	<input type="text" name="search" placeholder="Search">
+                	<button type="button" class="btn btn-default btn-xs search-btn">
+			          <span class="glyphicon glyphicon-search"></span>
+			        </button>         	
+	        	</div>
+	        	<div class="pull-right">
+		            <ul class="nav nav-pills">
+		                <li>
+		                    <a alt="Support" href="1040_Support.html">Support</a>
+	                    </li>
+	                    <li>
+		                    <a alt="About Us" href="1050_AboutUs.html">About Us</a>
+	                    </li>
+	                    <li>
+		                    <a href="#" alt="Log in">
+		                        <span class="glyphicon glyphicon-log-in"></span>&nbsp;
+		                        <span>| Log in</span>
+		                    </a>
+	                    </li>
+		            </ul>
+		        </div>
+        	</div>
+		</div>
+	</div>
+	<div class="body">
+		<div class="container">
+			<div class="row">
+				<div class="leftNav">
+					<ul class="list-group leftNavList">
+						<li class="list-group-item">
+							<a href="#part1">Part 1</a>
+						</li>		
+						<li class="list-group-item">
+							<a href="#part2">Part 2</a>
+						</li>
+						<li class="list-group-item">
+							<a href="#part3">Part 3</a>
+						</li>
+						<li class="list-group-item">
+							<a href="#part4">Part 4</a>
+						</li>
+						<li class="list-group-item">
+							<a href="#part5">Part 5</a>
+						</li>
+					</ul>
+					<div style="text-align:center">
+						<a name="To the top of the page" href="#">To the Top</a>
+					</div>
+				</div>
+				<div class="mainContent">
+					<section id="part1">
+						<h1>Part 1</h1>
+						<h5>Part 1 Sub Header</h5>
+						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+						</p>
+						<p class="center">
+							<a href="#" class="btn btn-small btn-warning">
+								<span class="icon-angle-right"></span>Take advantage of our introductory offer
+							</a>
+						</p>
+						<hr />
+					</section>
+		           
+					<section id="part2" class="clearfix">
+						<h1>Part 2</h1>
+		                <h5>Part 2 Sub Header</h5>
+								<div class="pull-left" style="width:600px">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+								</div>
+								<div class="pull-right" style="background:#000;display:block;height:200px;width:200px;"></div>
+						
+						<p class="center">
+							<a href="#" class="btn btn-small btn-warning">
+								<i class="icon-angle-right"></i>Take advantage of our introductory offer
+							</a>
+						</p>
+			            <hr />
+					</section>
+				</div>
+			</div>
+		</div>
+	</div>
+	<br/>
+	<br/>
+	<script type="text/javascript" src="/bootstrap_handson/js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="/bootstrap_handson/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>表单</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="css/bootstrap.min.css"/>
+		<style>
+			body{
+				padding: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<h3>示例2</h3>
+		<ul class="nav nav-pills">
+		    <li class="dropdown">
+				<a href="##" class="dropdown-toggle" role="button" id="tutorial">教程<b class="caret"></b></a>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="tutorial">
+					<li role="presentation"><a href="##">CSS3</a></li>
+					<li role="presentation"><a href="##">HTML5</a></li>
+					<li role="presentation"><a href="##">Sass</a></li>
+				</ul>
+			</li>
+			<li class="active"><a href="##">前端论坛</a></li>
+			<li><a href="##">关于我们</a></li>
+		</ul>
+		<br/>
+		<br/>
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+	    $(function(){
+	            $(".dropdown-toggle").on("click",function(){
+	                $(this).dropdown("toggle");
+	            });
+	        });
+</script>
+	</body>
+</html>

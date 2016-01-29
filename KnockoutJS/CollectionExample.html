@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<head>
+	<title>Collection Example</title>
+	<style type="text/css">
+		body { font-family: arial; font-size: 14px; }
+		.liveExample { padding: 1em; background-color: #EEEEDD; border: 1px solid #CCC; max-width: 655px; }
+		.liveExample input { font-family: Arial; }
+		.liveExample b { font-weight: bold; }
+		.liveExample p { margin-top: 0.9em; margin-bottom: 0.9em; }
+		.liveExample select[multiple] { width: 100%; height: 8em; }
+		.liveExample h2 { margin-top: 0.4em; }
+		.renderTime { color: #777; font-style: italic; font-size: 0.8em; }
+		li { list-style-type: disc; margin-left: 20px; }
+	</style>
+</head>
+<body>
+	<div class='liveExample'>
+		<h2>People</h2>
+		<ul data-bind="foreach: people">
+			<li>
+				<div>
+					<span data-bind="text:name"></span> has <span data-bind="text: children().length"></span> children:
+					<a href="##" data-bind="click: addChild">Add Child</a>
+					<span class="renderTime" data-bind="visible: $root.showRenderTimes">(Child rendered at <span data-bind="text:new Date().getSeconds()"></span>)</span>
+				</div>
+				<ul data-bind="foreach: children">
+					<li>
+						<span data-bind="text:$data"></span>
+						<span class="renderTime" data-bind="visible: $root.showRenderTimes">(child rendered at <span data-bind="text: new Date().getSeconds()"></span>)</span>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		<label><input type="checkbox" data-bind="checked: showRenderTimes"/>Show Render Times</label>
+	</div>
+
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/knockout-3.3.0.js"></script>
+	<script type="text/javascript">
+		var Person = function(name, children){
+			var self = this;
+			self.name = name;
+			self.children = ko.observableArray(children);
+			self.addChild = function(){
+				self.children.push("New Child");
+			};
+		};
+		var viewModel = {
+			people:[
+				new Person("Annabelle", ["Arnie", "Anders", "Apple"]),
+        		new Person("Bertie", ["Boutros-Boutros", "Brianna", "Barbie", "Bee-bop"]),
+        		new Person("Charles", ["Cayenne", "Cleopatra"])
+			],
+			showRenderTimes:ko.observable(false)
+		};
+		ko.applyBindings(viewModel);
+	</script>
+</body>

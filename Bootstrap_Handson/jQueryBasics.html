@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>表单</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+			body{
+				padding: 20px;
+			}
+			/*
+			div {
+			    border: 2px solid;
+			    border-radius: 25px;
+			    padding: 10px;
+			}
+			*/
+			fieldset{
+				border:solid;
+			}
+
+			/*For #htmlDOMDiv*/
+			#htmlDOMDiv p {
+			    margin: 8px;
+			    font-size: 20px;
+			}
+			#htmlDOMDiv b {
+			    text-decoration: underline;
+			    cursor: pointer;
+			}
+			.htmlDOMButton {
+			    cursor: pointer;
+			}
+			.htmlSetContentDiv{
+				background-color: lightblue;
+			}
+			.selectedP {
+			    color: blue;
+			}
+			.highlight {
+			    background: yellow;
+			  }
+
+			  #clickDiv p {
+			    color: red;
+			    margin: 5px;
+			    cursor: pointer;
+			  }
+			  #clickDiv p:hover {
+			    background: yellow;
+			  }
+
+			  /*Events - hover()*/
+			  #hoverDiv ul {
+			    margin-left: 20px;
+			    color: blue;
+			  }
+			  #hoverDiv li {
+			    cursor: default;
+			  }
+			  #hoverDiv span {
+			    color: red;
+			  }
+
+			  /*Events - each()*/
+			  #eachDiv ul {
+			    font-size: 18px;
+			    margin: 0;
+			  }
+			  #eachDiv span {
+			    color: blue;
+			    text-decoration: underline;
+			    cursor: pointer;
+			  }
+			  .example {
+			    font-style: italic;
+			  }
+
+		</style>
+	</head>
+	<body>
+		<h2> jQuery Basics - 24 Examples</h2>
+		<br/>
+		<!--ID Selector-->
+		<div id="idSelectorDiv">
+			<fieldset>
+		   		<legend>ID Selector</legend>
+				<p id="divtest">Content of a P Element</p>
+				<input type="button" id="btnIdSelector" onclick="getValueByID()" value="Get Value By ID"/>
+		    </fieldset>
+		</div>
+		<br/>
+		<!--Class Selector-->
+		<div id="classSelectorDiv">
+			<fieldset>
+				<legend>Class Selector</legend>
+				<p class="red">Look at Me</p>
+				<input type="button" id="btnClassSelector" onclick="getValueByClass()" value="Get Value By Class"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Element Selector-->
+		<div id="elementSelectorDiv">
+			<fieldset>
+				<legend>Element Selector</legend>
+					<select>
+						<option selected="true">1</option>
+						<option>2</option>
+						<option>3</option>
+					</select>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="button" id="btnElementSelector" onclick="getValueByElementName()" value="Get Value By Element"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--All Selector-->
+		<div id="allSelectorDiv">
+			<fieldset>
+				<legend>All Selector</legend>
+				<div id="allSelectorContentDiv">
+					<span>This is a span element.</span>
+					<p>This is a p element.</p>
+					<label>This is a label element.</label>
+				</div>
+				<br/>
+				<input type="button" id="btnAllSelector" onclick="setValueOfAllElements()" value="Set Value of All Elements"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Filter :eq()-->
+		<div id="eqFilterDiv">
+			<fieldset>
+				<legend>Filter - :eq()</legend>
+				<div>Change background color of grape:</div>
+		        <ol id="eqFilterList">
+			        <li>Orange</li>
+			        <li>Banana</li>
+			        <li>Grape</li>
+			        <li>Apple</li>
+			        <li>Watermelon</li>
+		        </ol>
+		        <br/>
+		        <input type="button" id="btnEqFilter" onclick="setBgColorByEqSelector()" value="Set Color"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Filter :first-->
+		<div id="firstFilterDiv">
+			<fieldset>
+				<legend>Filter - :first</legend>
+				<div>Change background color of first item:</div>
+		        <ol id="firstFilterList">
+			        <li>Orange</li>
+			        <li>Banana</li>
+			        <li>Grape</li>
+			        <li>Apple</li>
+			        <li>Watermelon</li>
+		        </ol>
+		        <br/>
+		        <input type="button" id="btnFirstFilter" onclick="setBgColorOfFirstItem()" value="Set Color of First Item"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Filter :last-->
+		<div id="lastFilterDiv">
+			<fieldset>
+				<legend>Filter - :last</legend>
+				<div>Change background color of last item:</div>
+		        <ol id="lastFilterList">
+			        <li>Orange</li>
+			        <li>Banana</li>
+			        <li>Grape</li>
+			        <li>Apple</li>
+			        <li>Watermelon</li>
+		        </ol>
+		        <br/>
+		        <input type="button" id="btnLastFilter" onclick="setBgColorOfLastItem()" value="Set Color of Last Item"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Filter :not()-->
+		<div id="notFilterDiv">
+			<fieldset>
+				<legend>Filter - :not()</legend>
+				<ul id="notFilterList">
+					<li>
+						<input type="checkbox" name="a">
+						<span>Mary</span>
+					</li>
+					<li>
+						<input type="checkbox" name="b">
+						<span>lcm</span>
+					</li>
+					<li>
+						<input type="checkbox" name="c" checked="checked"><span>Peter</span>
+					</li>
+				</ul>
+				<br/>
+				<input type="button" id="btnNotFilter" onclick="hightLightsItemsByNotFilter()" value="Hightlights unchecked inputs"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Filter :has()-->
+		<div id="hasFilterDiv">
+			<fieldset>
+				<legend>Filter - :has()</legend>
+				<div>Change background color of the Elements that has "label" element：</div>
+		        <ol id="hasFilterList">
+		            <li><p>This is Mr.P</p></li>
+		            <li><label>This is Mr.Label</label></li>
+		            <li><p>I am Mr.P too.</p></li>
+		            <li><label>I am also Mr.Label</label></li>
+		            <li><p>Mr.P is me.</p></li>
+		        </ol>
+		        <input type="button" id="btnHasFilter" onclick="changeBgColorByhasFilter()" value="Change Background Color"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Filter :contains()-->
+		<div id="containsFilterDiv">
+			<fieldset>
+				<legend>Filter - :contains()</legend>
+				<div>Change background color of items that contain "jQuery" words:</div>
+		        <ol id="containsFilterList">
+		            <li>Strong "jQuery"</li>
+		            <li>"javascript" is useful</li>
+		            <li>"jQuery" is necessary</li>
+		            <li>"java" is one kind of programming language</li>
+		            <li>Web front-end Skill - "jQuery"</li>
+		        </ol>
+		        <input type="button" id="btnContainsFilter" onclick="changeBgColorByContainsFilter()" value="Change background color"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Filter :parent()-->
+		<div id="parentFilterDiv">
+			<fieldset>
+				<legend>Filter - :parent()</legend>
+				<div>Set background color of item A 's parent element(.level-2):</div>
+				<ul class="level-1">
+				  <li class="item-i">I</li>
+				  <li class="item-ii">II
+				    <ul class="level-2">
+				      <li class="item-a">A</li>
+				      <li class="item-b">B
+				        <ul class="level-3">
+				          <li class="item-1">1</li>
+				          <li class="item-2">2</li>
+				          <li class="item-3">3</li>
+				        </ul>
+				      </li>
+				      <li class="item-c">C</li>
+				    </ul>
+				  </li>
+				  <li class="item-iii">III</li>
+				</ul>
+				<input type="button" id="btnParentFilter" onclick="setBgColorByParentFilter()" value="Set Background Color"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--DOM - html()-->
+		<div id="htmlDOMDiv">
+			<fieldset>
+				<legend>DOM - html()</legend>
+				<span>----------------------Get Value--------------------</span>
+				<div id="getValueByHTML">
+					<p>
+					  <b>Click</b> to change the <span id="tag">html</span>
+					</p>
+					<p>
+					  to a <span id="text">text</span> node.
+					</p>
+					<p>
+					  This <input type="button" class="htmlDOMButton" id="btnHTMLDOM" name="nada" value="button"/> does nothing.
+					</p>
+				</div>
+				<span>----------------------Set Value-----------------------------</span>
+				<div id="setValueByHTML">
+					<div id="copyFromDiv">Wow! Such excitement</div>
+					<div id="pasteToDIV">Really?</div>
+					<br/>
+					<input type="button" id="btnSetValueByHTML" class="htmlDOMButton" onclick="setContentByHTML()" value="Copy and Paste"/>
+				</div>
+			</fieldset>
+		</div>
+		<br/>
+		<!--DOM - text()-->
+		<div id="textDOMDiv">
+			<fieldset>
+				<legend>DOM - text()</legend>
+				<div>
+					<p id="originalText"><b style="color:blue">Test</b> Paragraph.</p>
+					<p id="destinationText"></p>
+				</div>
+				<input type="button" id="btnTextDOM" onclick="setContentByText()" value="Set Content By Text()"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--DOM - val()-->
+		<div id="valDOMDiv">
+			<fieldset>
+				<legend>DOM - val()</legend>
+				<div>
+					Copy From: <input type="text" id="valInput" value="some text">
+					<br/>
+					Paste To: <input type="text" id="valInput2" readonly="true">
+				</div>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Attribute - attr()-->
+		<div id="attrDiv">
+			<fieldset>
+				<legend>Attribute - attr()</legend>
+				<div id="getAttributeDiv">
+					<h3>Get & Set attribute By attr()</h3>
+			        <a href="http://127.0.0.1" id="a1">This is a link</a>
+			        <div>
+			        	The address of link is: 
+			        	<span id="tip"></span>
+			        </div>
+			        <div id="a2Div" style="display:none">
+			        	<a href="" id="a2">This is the same link</a>
+			        </div>
+				</div>
+				<br/>
+				<input type="button" id="btnSetAttr" onclick="setAddressByAttr()" value="Get Link Address"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Attribute - removeAttr()-->
+		<div id="removeAttrDiv">
+			<fieldset>
+				<legend>Attribute - removeAttr()</legend>
+				<h3>removeAttr() is used to remove attribute of an element</h3>
+        		<h1>This is h1</h1>
+				<p style="font-size:120%;color:red" class="removeAttr">This is a paragraph.</p>
+				<p class="removeAttr">This is a paragraph, too.</p>
+				<input type="button" id="btnRemoveStyle" value="Remove style of all paragraphs"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Attribute - addClass() & removeClass()-->
+		<div id="addClassDiv">
+			<fieldset>
+				<legend>Attribute - addClass() & removeClass()</legend>
+				<div>
+					<p>Hello</p>
+					<p id="removeClassP" class="highlight">and</p>
+					<p id="addClassP">Goodbye</p>
+				</div>
+				<br/>
+				<input type="button" id="btnAddClass" onclick="addClassforP()" value="Add Class for 'Goodbye'"/>
+				&nbsp;&nbsp;&nbsp;
+				<input type="button" id="btnRemoveClass" onclick="removeClassforP()" value="Remove Class for 'And'"/>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Events - bind()-->
+		<div id="bindDiv">
+			<fieldset>
+				<legend>Events - bind()</legend>
+				<h3>use bind() to add a click event</h3>
+        		<input id="btnBind" type="button" value="Work Only Once" />
+			</fieldset>
+		</div>
+		<br/>
+		<!--Events - unbind()-->
+		<div id="unbindDiv">
+			<fieldset>
+				<legend>Events - unbind()</legend>
+				<h3>use unbind() to remove the click event of P Elements</h3>
+				<p>This is first paragraph.</p>
+				<p id="secondPara">This is second paragraph.</p>
+				<div>Click on button to remove click event of second paragraph.</div>
+				<br/>
+        		<input id="btnUnBind" type="button" value="Unbind Click Event" />
+			</fieldset>
+		</div>
+		<br/>
+		<!--Events - click()-->
+		<div id="clickDiv">
+			<fieldset>
+				<legend>Events - click()</legend>
+				<p>First Paragraph</p>
+				<p>Second Paragraph</p>
+				<p>Yet one more Paragraph</p>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Events - change()-->
+		<div id="changeDiv">
+			<fieldset>
+				<legend>Events - change()</legend>
+				<h3>Change event of dropdown list</h3>
+				<select id="changeSelected">
+					<option value="grape">Grape</option>
+					<option value="apple">Apple</option>
+					<option value="litchi">Litchi</option>
+					<option value="banana">Banana</option>
+				</select>
+				<br/>
+				<span id="spanSelected"></span>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Events - hover()-->
+		<div id="hoverDiv">
+			<fieldset>
+				<legend>Events - hover()</legend>
+				<div>
+					<ul>
+					  <li>Milk</li>
+					  <li>Bread</li>
+					  <li class="fade">Chips</li>
+					  <li class="fade">Socks</li>
+					</ul>
+				</div>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Events - toggle()-->
+		<div id="toggleDiv">
+			<fieldset>
+				<legend>Events - toggle()</legend>
+				<div>
+					<p id="pToggle">This is a paragraph.</p>
+					<input type="button" id="btnToggle" value="Toggle"/>
+				</div>
+			</fieldset>
+		</div>
+		<br/>
+		<!--Events - each()-->
+		<div id="eachDiv">
+			<fieldset>
+				<legend>Events - each()</legend>
+				To do list: <span>(click here to change)</span>
+				<ul>
+				  <li>Eat</li>
+				  <li>Sleep</li>
+				  <li>Be merry</li>
+				</ul>
+			</fieldset>
+		</div>
+		<br/>
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript">
+			//ID Selector
+			function getValueByID(){
+				alert($("#divtest").text());
+			}
+			
+			//Class Selector
+			function getValueByClass(){
+				alert($(".red").text());
+			}
+
+			//Element Selector
+			function getValueByElementName(){
+				alert($("select").val());
+			}
+
+			//All Selector
+			function setValueOfAllElements(){
+				$("#allSelectorContentDiv *").html("We are in the same Div");
+			}
+
+			//:eq() Filter
+			function setBgColorByEqSelector(){
+				//index starts from 0
+				$("#eqFilterList li:eq(2)").css("background-color", "lightblue");
+			}
+
+			//:first Filter
+			function setBgColorOfFirstItem(){
+				$("#firstFilterList li:first").css("background-color", "Orange");
+			}
+
+			//:last Filter
+			function setBgColorOfLastItem(){
+				$("#lastFilterList li:last").css("background-color", "pink");
+			}
+
+			//:not() Filter
+			function hightLightsItemsByNotFilter(){
+				$( "#notFilterList input:not(:checked) + span" ).css( "background-color", "yellow" );
+				$( "#notFilterList input").attr( "disabled", "disabled" );
+			}
+
+			//:has() Filter
+			function changeBgColorByhasFilter(){
+				$("#hasFilterList li:has('label')").css("background-color", "lightblue");
+			}
+
+			//:contains() Filter
+			function changeBgColorByContainsFilter(){
+				$("#containsFilterList li:contains('jQuery')").css("background-color", "Orange")
+			}
+
+			//:parent() Filter
+			function setBgColorByParentFilter(){
+				$("li.item-a").parent().css("background-color", "grey");
+				//$("ul.level-2").css("background-color", "grey");
+			}
+
+			//html() DOM
+			$(function(){
+				$("#htmlDOMDiv p").click(function() {
+				  var htmlString = $(this).html();
+				  $(this).text(htmlString);
+				});
+			});
+
+			//html(htmlString) DOM
+			function setContentByHTML(){
+				$("#pasteToDIV").html("<span class='htmlSetContentDiv'>Wow! Such excitement</span>");
+			}
+
+			//text() DOM
+			function setContentByText() {
+				var str = $("#originalText").text();
+				$("#destinationText").text(str);
+			}
+
+			//val() DOM
+			$(function(){
+				$("#valInput").keyup(function(){
+				    var value = $(this).val();
+				    $("#valInput2").val(value);
+				  }).keyup();
+			});
+
+			//attr() Attribute
+			function setAddressByAttr(){
+				var url =$("#a1").attr("href");
+				$("#tip").text(url);
+				$("#a2").attr("href", url);
+				$("#a2Div").show();
+			}
+
+			//removeAttr() Attribute
+			(function() {
+			  $("#btnRemoveStyle").click(function(){
+			    $(".removeAttr").removeAttr("style");
+			  });
+			})();
+
+			//addClass() Attribute
+			function addClassforP(){
+				$("#addClassP").addClass("selectedP");
+			}
+
+			//removeClass() Attribute
+			function removeClassforP(){
+				$("#removeClassP").removeClass("highlight");
+			}
+
+			//bind() Event
+			$(function(){
+				$("#btnBind").bind("click", function(){
+					$(this).attr("disabled", "true")
+				});
+			});
+			//unbind() Event
+			$(function(){
+				$("#unbindDiv p").click(alertMe);
+
+				  $("#btnUnBind").click(function(){
+				    $("#secondPara").unbind("click", alertMe);
+				  });
+			});
+
+			function alertMe(){
+				alert("Hello World!");
+			}
+
+			//click() Event
+			$(function(){
+				$("#clickDiv p").click(function() {
+				  $(this).slideUp();
+				});
+			});
+
+			//change() Event
+			$(function(){
+				$("#changeSelected").change(function(){
+					$("#spanSelected").html("You have selected: "+$(this).val());
+				});
+				$("#changeSelected").change();
+			});
+
+			//hover() Event
+			$(document).ready(function(){
+				$( "#hoverDiv li" ).hover(
+				  function() {
+				    $(this).append($("<span> ***</span>"));
+				  }, function() {
+				    $(this).find("span:last").remove();
+				  }
+				);
+				 
+				$("#hoverDiv li.fade").hover(function() {
+				  $(this).fadeOut(100);
+				  $(this).fadeIn(500);
+				});
+			});
+
+			//toggle() Event
+			$(document).ready(function(){
+				$("#btnToggle").click(function(){
+					$("#pToggle").toggle("normal");
+				});
+			});
+
+			//each() Event
+			$("#eachDiv span").click(function() {
+			  $("#eachDiv li").each(function() {
+			    $(this).toggleClass("example");
+			  });
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Flat Blog</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=10">
+		<link rel="stylesheet" type="text/css" href="/bootstrap_handson/css/bootstrap.min.css">
+		<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+		<style type="text/css">
+			@import "compass/css3";
+
+			// Emmet article generation line : .col-xs-12.article-wrapper*5>article>a.more[href=#]>{more}^+.img-wrapper>img[src=http://lorempixel.com/150/150/nature]^+h1>Lorem3^+p>Lorem15
+
+			//@import url(http://fonts.googleapis.com/css?family=Pacifico);
+			/* latin */
+			@font-face {
+			  font-family: 'Pacifico';
+			  font-style: normal;
+			  font-weight: 400;
+			  src: local('Pacifico Regular'), local('Pacifico-Regular'), url(http://fonts.gstatic.com/s/pacifico/v7/Q_Z9mv4hySLTMoMjnk_rCfesZW2xOQ-xsNqO47m55DA.woff2) format('woff2');
+			  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+			}
+			$size:150px;
+			$bg:#CDE;
+
+			body{
+			  padding:0 100px 100px;
+			  background-color: $bg !important;
+			}
+
+			h1#header{
+			  text-align: center;
+			  padding:50px;
+			  font-size: 62px;
+			  font-family: "Pacifico";
+			  @include text-shadow(0 2px 2px darken($bg,40%));
+			}
+
+			.article-wrapper{
+			  @include transition(width .4s);
+			}
+
+			article{
+			  position:relative;
+			  padding-left:$size + 30;
+			  padding-right: $size/2;
+			  height: $size;
+			  margin-bottom: 30px;
+			  background-color: #FFF;
+			  @include border-radius($size);
+			  cursor:pointer;
+			  
+			  .img-wrapper{
+			    position: absolute;
+			    top:- 10px;
+			    left:-10px;
+			    @include border-radius(100px);
+			    background-color: $bg;
+			    padding:10px;
+			    z-index: 1000;
+			    @include transition(all .2s);
+			    
+			    img{
+			      @include border-radius(100px);
+			      @include transition(all .2s);
+			      width: $size;
+			    }
+			  }
+			  
+			  h1{
+			    height: $size/2;
+			    line-height: $size/2;
+			    font-size: 24px;
+			    border-bottom: 2px solid $bg;
+			    color: #428bca;
+			    @include transition(all .4s);
+			  }
+			  p{
+			    color: #888;
+			  }
+			  a{
+			    position:absolute;
+			    display:block;
+			    top: 0;
+			    left: 0;
+			    height: 100%;
+			    line-height: $size;
+			    text-align: center;
+			    width: 100%;
+			    background-color: #FFF;
+			    font-size: 48px;
+			    font-style:italic;
+			    opacity:0;
+			    color: #428bca !important;
+			    @include transition(all .4s);
+			    text-decoration: none !important;
+			    @include border-radius($size);
+			    font-family: "Pacifico";
+			    @include text-shadow(0 1px 1px #AAA);
+			  }
+			   &:hover{
+			    .img-wrapper{
+			      padding:5px;
+			      @include transform(rotate(5deg));
+			      img{
+			        width: $size + 10;
+			      }
+			    }
+			    a{
+			      opacity:1;
+			    }
+			  }
+			}
+
+			.bloc{
+			  article{
+			    padding:10px;
+			    height: $size*1.5;
+			    @include border-radius(3px);
+			    margin-top: $size/2;
+			    
+			    .img-wrapper{
+			      position: relative;
+			      top:-($size+20)/2;
+			      width: $size+20;
+			      left:inherit;
+			      margin: auto;
+			      margin-bottom: -$size + 50;
+			    }
+			    
+			    h1{
+			      font-size: 14px;
+			      height: $size/4;
+			      line-height: $size/4;
+			    }
+			    
+			    p{
+			      font-size: 12px;
+			    }
+			    
+			    a{
+			       @include border-radius(3px);
+			       line-height: $size*1.5 +30;
+			    }
+			  }
+			}
+		</style>
+	</head>
+	<body>
+		<h1 id="header" class="text-primary">My Blog</h1>
+		<div class="container list-article">
+		  <div class="btn-group pull-right" id="switch-view">
+		    <button class="btn btn-primary">
+		      <span class="icon-th-large"></span>
+		    </button>
+		    <button class="btn btn-primary active">
+		      <span class="icon-th-list"></span>
+		    </button>
+		  </div>
+		  <div class="clearfix"></div>
+		  <div class="row">
+		    <div class="col-xs-12 article-wrapper">
+		      <article>
+		        <a href="#" class="more">more</a>
+		        <div class="img-wrapper"><img src="http://lorempixel.com/150/150/fashion" alt="" /></div>
+		        <h1>Lorem ipsum dolor.</h1>
+		        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet ducimus totam quasi nam porro sed.</p>
+		      </article>
+		    </div>
+		    <div class="col-xs-12 article-wrapper">
+		      <article>
+		        <a href="#" class="more">more</a>
+		        <div class="img-wrapper"><img src="http://lorempixel.com/150/150/city" alt="" /></div>
+		        <h1>Dignissimos perferendis quae.</h1>
+		        <p>Numquam dolorem sed quae placeat iusto! Quibusdam doloremque enim assumenda aliquam impedit earum alias labore.</p>
+		      </article>
+		    </div>
+		    <div class="col-xs-12 article-wrapper">
+		      <article>
+		        <a href="#" class="more">more</a>
+		        <div class="img-wrapper"><img src="http://lorempixel.com/150/150/food" alt="" /></div>
+		        <h1>Quisquam deserunt cumque!</h1>
+		        <p>Dolor tempora nihil facere explicabo qui mollitia deleniti quam quia iure nisi voluptate voluptatibus cum.</p>
+		      </article>
+		    </div>
+		    <div class="col-xs-12 article-wrapper">
+		      <article>
+		        <a href="#" class="more">more</a>
+		        <div class="img-wrapper"><img src="http://lorempixel.com/150/150/nature" alt="" /></div>
+		        <h1>Velit natus possimus.</h1>
+		        <p>Illum voluptates nisi asperiores temporibus illo maiores qui aliquid corporis exercitationem libero dolor tenetur. Doloremque!</p>
+		      </article>
+		    </div>
+		    <div class="col-xs-12 article-wrapper">
+		      <article>
+		        <a href="#" class="more">more</a>
+		        <div class="img-wrapper"><img src="http://lorempixel.com/150/150/abstract" alt="" /></div>
+		        <h1>Atque quo maxime.</h1>
+		        <p>Sed eveniet iste magni possimus ipsum dolore ea nesciunt eligendi id. Eum quos voluptatibus ullam.</p>
+		      </article>
+		    </div>
+		  </div>
+		</div>
+		<br/>
+		<br/>
+		<script type="text/javascript" src="/bootstrap_handson/js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="/bootstrap_handson/js/bootstrap.min.js"></script>
+		<script type="text/javascript">
+			// JS only for the switch
+			$(function(){
+			  $("#switch-view").click(function(){
+			    $(this).find("button").toggleClass("active");
+			    $(".article-wrapper").toggleClass("bloc col-xs-12 col-xs-4");
+			  });
+			});
+		</script>
+	</body>
+</html>

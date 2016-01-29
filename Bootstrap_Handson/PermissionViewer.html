@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Permission Viewer</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="css/bootstrap.css">
+
+		<style>
+			#treeSiteStructure,#textAreaPermissions{
+				 height:400px;
+				 border: 1px solid #ddd;
+				 overflow:auto;
+				 border-top-left-radius:4px;
+				 border-top-right-radius:4px;
+				 border-bottom-left-radius:4px;
+				 border-bottom-right-radius:4px;
+			}
+
+			.treeview-indent {
+				width:16px; 
+				height: 16px; 
+				display: inline-block; 
+				position: relative;
+			}
+
+			.treeview-expander {
+				width:16px; 
+				height: 16px; 
+				display: inline-block; 
+				position: relative; 
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<h2 style="text-align:center">Welcome to Permission Viewer</h2>
+		<br/>
+		<div id="divPermissionViewer" class="container">
+			<div id="rowSiteUrl" class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="textSiteURL" class="col-sm-2 control-label">SharePoint Site:</label>
+					<div class="col-sm-9">
+						<input type="text" id="textSiteURL" class="form-control"/>
+					</div>
+					<div class="col-sm-1" style="text-align:right">
+						<input type="button" id="btnLoadSite" class="btn btn-default" value="Load"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="textSelectUser" class="col-sm-2 control-label">Select user:</label>
+					<div class="col-sm-3">
+						<select id="selectUser" class="form-control"></select>
+					</div>
+					<div class="col-sm-1">
+					</div>
+					<div class="col-sm-1" style="text-align:center">
+						<label class="control-label">- or -</label>
+					</div>
+					<label for="textSelectGroup" class="col-sm-2 control-label">Select group:</label>
+					<div class="col-sm-3">
+						<select id="selectGroup" class="form-control"></select>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div id="divSiteStructure" class="col-sm-6">
+					<label style="font-size:21px">Site Structure:</label>
+					<div id="treeSiteStructure">
+						<div id="treeviewDIV">
+							<table class="tree" id="treeview">
+						        <tr class="treeview-1 rootNode">
+						          <td>Lists</td>
+						        </tr>
+						        <tr class="treeview-2 rootNode">
+						          <td>Libraries</td>
+						        </tr>
+						        <tr class="treeview-3 rootNode">
+						        	<td>Sites</td>
+						        </tr>
+						        <tr class="treeview-3-1 treeview-parent-3 folderNode">
+						        	<td>Site A</td>
+						        </tr>
+						        
+						        <tr class="treeview-4 rootNode">
+						        	<td>Groups</td>
+						        </tr>
+						        <tr class="treeview-4-1 treeview-parent-4 folderNode">
+						        	<td>Groups - 1</td>
+						        </tr>
+						        <tr class="treeview-4-1-1 treeview-parent-4-1">
+						        	<td>Groups - 1 - 1</td>
+						        </tr>
+						        <tr class="treeview-4-1-2 treeview-parent-4-1 folderNode">
+						        	<td>Site A100</td>
+						        </tr>
+						        <tr class="treeview-4-1-2-1 treeview-parent-4-1-2 leafNode">
+						        	<td>Site A100</td>
+						        </tr>
+						      </table>
+					    </div>
+					</div>
+				</div>
+				<div id="divPermissions" class="col-sm-6">
+					<label style="font-size:21px">Permissions:</label>
+					<div id="textAreaPermissions">
+					</div>
+				</div>
+			</div>
+		</div>
+		<br/>
+		
+		<br/>
+		<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/treeview.js"></script>
+		
+
+		<script type="text/javascript">
+
+			//add a method to String type
+			String.format = function() {
+	            // The string containing the format items (e.g. "{0}")
+	            // will and always has to be the first argument.
+	            var theString = arguments[0];
+	            
+	            // start with the second argument (i = 1)
+	            for (var i = 1; i < arguments.length; i++) {
+	                // "gm" = RegEx options for Global search (more than one instance)
+	                // and for Multiline search
+	                var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
+	                theString = theString.replace(regEx, arguments[i]);
+	            }
+	            return theString;
+	        }
+
+			/*----------------------generate tree view---------------------------*/
+			var tableId = "treeview";
+			//{0} -> current id, {1} -> parent id, {2} -> folderNode or leafNode, {3} -> link address, {4} -> name
+		   	var trTemplate = "<tr class='treeview-{0} treeview-parent-{1} {2}'><td><a href='#' data-link='{3}'>{4}</a></td></tr>";
+
+		   	//run after page load
+			$(function() {
+				//create an instance of $.Treeview class
+				var treeview = new $.Treeview($("#"+tableId));
+				treeview.InitTreeview();
+				
+				//add click event for expander
+				$("#"+ tableId).on("click", ".treeview-expander", function(){
+					var $currentNode = $(this).closest("tr");
+					
+					//load data of child nodes
+					loadNewNodesData($currentNode);
+
+					//add toggle event for expanders
+					treeview.toggle($currentNode);
+				});
+
+				//load data of new nodes
+			   	function loadNewNodesData($currentNode){
+			   		if($currentNode.hasClass("treeview-3-1") && $currentNode.hasClass("treeview-collapsed")){
+						var firstChileNodeTR = String.format(trTemplate, "3-1-1", "3-1", "folderNode", "http://www.baidu.com", "Node1");
+						$(firstChileNodeTR).insertAfter($currentNode);
+
+		        		treeview.render(initNewNodes($currentNode));
+					}
+			   	}
+
+			   	//initiate nodes, expander, and indent
+			   	function initNewNodes(nodes){
+			   		return $(nodes).each(function() {
+		                var $this = $(this);
+		                treeview.initNodes(treeview.getChildNodes($this));
+		                treeview.initIndent(treeview.initExpander($this));
+		            });
+			   	}
+
+			});
+
+
+			/*-------------------------------Load data from site----------------------------------------*/
+			//load site structure
+			function loadSiteStructure(){
+				var siteUrl = "http://isp.emea.festo.net/sites/cn0jacky"; //$("#textSiteURL").text().trim();
+			}
+
+			//get all sub sites
+			function getSubSites(siteUrl){
+				var subSitesInfoURI = siteUrl + "/_api/Web/WebInfos";
+				$.ajax({
+					url: subSitesInfoURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d.results){
+					  		var subNodes=[];
+					      $.each(data.d.results, function(index, item){
+					      		nodeTemplate = new Object();
+					      		nodeTemplate.text=item.Title;
+					      		nodeTemplate.link=item.ServerRelativeUrl;
+					          subNodes.push(nodeTemplate);
+					      });
+					      return subNodes;
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//get all lists and libraries
+			function getListsAndLibraries(siteUrl){
+				var listsInfoURI = siteUrl + "/_api/Web/lists?$filter=Hidden ne true";
+				$.ajax({
+					url: listsInfoURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d.results){
+					      $.each(data.d.results, function(index, item){
+					      		//item.Title
+					      		//item.BaseType --> 0 is list, 1 is library
+					      		//item.ItemCount
+
+					      		//item.Items.__deferred.uri -->http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'ee629b87-d757-493d-b910-493c5ae38b20')/Items
+
+					      		//item.RoleAssignments.__deferred.uri --> http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'ee629b87-d757-493d-b910-493c5ae38b20')/RoleAssignments
+					      });
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//get all groups
+			function getAllUserGroups(siteUrl){
+				var groupsInfoURI = siteUrl + "/_api/web/roleassignments/groups";
+				$.ajax({
+					url: groupsInfoURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d.results){
+					      $.each(data.d.results, function(index, item){
+					      		//item.Title
+					      		//item.Users.__deferred.uri --> http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(7)/Users
+					      		
+					      });
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//get users in one group
+			// restURI should be like http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(7)/Users
+			function getUsersInOneGroup(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d.results){
+					      $.each(data.d.results, function(index, item){
+					      		//item.Title
+					      		//item.LoginName
+					      		//item.Email
+					      });
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//get all items inside a list or library: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957F1E6-A35A-4888-A770-D5325C5CFE74')/Items
+			function getItemsInOneList(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d.results){
+					      $.each(data.d.results, function(index, item){
+					      		//item.FileSystemObjectType 0 is file, 1 is folder
+					      		//item.Title
+					      });
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//get all folders and files inside a folder (without recursive)
+			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents')?$expand=Folders,Files
+			function getItemsInOneFolder(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d){
+					      $.each(data.d.Files.results, function(index, item){
+					      		//item.ServerRelativeUrl
+					      		//item.Name
+					      });
+
+					      $.each(data.d.Folders.results, function(index, item){
+					      	//item.Name
+					      	//item.ServerRelativeUrl  --> e.g. "/sites/cn0jacky/Documents/Folder1"
+					      	//item.ItemCount
+					      });
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//get site permissions
+			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$filter=Member/PrincipalType eq 8
+			// PrincipalType = 8 means it is a group, if PrincipalType equals to 1, it is a user
+			function getSitePermissions(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d.results){
+					      $.each(data.d.results, function(index, item){
+					      		//item.Member.Title
+					      		//item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+					      });
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//get permissions of a list or library
+			function getListPermissions(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d){
+					      
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//get permissions of a file or folder, can't be used for a library
+			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents/Folder1')?$expand=ListItemAllFields/RoleAssignments/Member,ListItemAllFields/RoleAssignments/RoleDefinitionBindings,ListItemAllFields/RoleAssignments/Member/Users&$select=ServerRelativeUrl,ListItemAllFields/RoleAssignments/Member/Title,ListItemAllFields/RoleAssignments/Member/PrincipalType,ListItemAllFields/RoleAssignments/Member/Users/Title,ListItemAllFields/RoleAssignments/Member/Users/PrincipalType,ListItemAllFields/RoleAssignments/RoleDefinitionBindings/Name,ListItemAllFields/RoleAssignments/RoleDefinitionBindings/Order
+			function getItemPermissions(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d.ListItemAllFields.RoleAssignments.results){
+					      $.each(data.d.ListItemAllFields.RoleAssignments.results, function(index, item){
+					      	//item.Member.Title -> name of group or user
+					      	//item.Member.PrincipalType -> 8 is group, 1 is user
+
+					      	//get permission levles of a group/user
+					      	$.each(item.RoleDefinitionBindings.results, function(index, item){
+					      		//item.Name --> permission level name
+					      		//item.Order --> 1 to 160
+					      	});
+
+					      	if(item.Member.PrincipalType == 8){
+					      		$.each(item.Member.Users.results, function(index, item){
+						      		//item.Title --> user name
+						      	});
+					      	}
+					      });
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//check whether a list or library has unique permission
+			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957f1e6-a35a-4888-a770-d5325c5cfe74')/HasUniqueRoleAssignments
+			function checkUniqueRoleAssignmentForList(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d){
+					      //data.d.HasUniqueRoleAssignments --> true or false
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//check whehter a file or folder has unique permissions
+			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents/Folder1')/ListItemAllFields/HasUniqueRoleAssignments
+			function checkUniqueRoleAssignmentForItem(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d){
+					      //data.d.HasUniqueRoleAssignments --> true or false
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+
+			//check whether current user is site collection administrator
+			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/CurrentUser
+			function checkSiteAdmin(restURI){
+				$.ajax({
+					url: restURI,
+					type: "GET",
+					headers: {"Accept": "application/json;odata=verbose"},
+					success: function(data){
+					  if(data.d){
+					      //data.d.IsSiteAdmin --> true or false
+					  }
+					},
+					error: function(xhr){
+					  alert(xhr.status+': '+xhr.statusText);
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

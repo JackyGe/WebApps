@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+			<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="/HTMLTraining/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<script src="/HTMLTraining/jquery/jquery-1.11.1.js"></script>
+		<script src="/HTMLTraining/bootstrap/js/bootstrap.min.js"></script>
+		<script src="/HTMLTraining/js/jquery.dataTables.min.js"></script>
+		<link href="/HTMLTraining/css/jquery.dataTables.min.css" rel="stylesheet">
+		<style type="text/css">
+			h1{
+				text-align: center;
+			}
+			.form-control { 
+				width: 100%; 
+			}
+			textarea{ 
+			  width: 100%; 
+			  min-width:100%; 
+			  max-width:100%; 
+			}
+			#contentTable th, td{
+				text-align:center;
+			}
+
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Welcome to query tool</h1>
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label for="inputUserID" class="col-sm-1 control-label">User ID:</label>
+					<div class="col-sm-5">
+						<textarea class="form-control" rows="3" id="inputUserID"></textarea>
+					</div>
+					<label for="inputDepartment" class="col-sm-1 control-label">Department:</label>
+					<div class="col-sm-5">
+						<textarea class="form-control" rows="3" id="inputDepartment"></textarea>
+					</div>
+				</div>
+			</form>
+			<div class="row">
+				<div class="col-sm-1"></div>
+				<input type="button" class="btn btn-primary col-sm-10" value="Query"/>
+			</div>
+			<br/>
+			<div class="row">
+					<table class="table table-striped" id="contentTable">
+				        <thead id="contentHead">
+				            <tr>
+				                <th class="col-sm-1">User</th>
+				                <th class="col-sm-2">First Name</th>
+				                <th class="col-sm-2">Last Name</th>
+				                <th class="col-sm-2">Long Name</th>
+				                <th class="col-sm-2">Department</th>
+				                <th class="col-sm-1">Domm.Meth</th>
+				                <th class="col-sm-2">E-Mail</th>
+				            </tr>
+				        </thead>
+				        <tbody id="contentBody">
+				            
+				        </tbody>
+				        <tfoot id="contentFoot">
+				        	
+				        </tfoot>
+				    </table>
+			</div>
+		</div>
+
+		<script src="/HTMLTraining/js/data.js"></script>
+		<script type="text/javascript">
+			//define the template of each row
+			var trTemplate="<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>";
+
+			//define a function for variables of String type
+			String.format = function() {
+
+	            var theString = arguments[0];
+	            
+	            // start with the second argument (i = 1)
+	            for (var i = 1; i < arguments.length; i++) {
+	                // "gm" = RegEx options for Global search (more than one instance)
+	                // and for Multiline search
+	                var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
+	                theString = theString.replace(regEx, arguments[i]);
+	            }
+	            return theString;
+	        }
+
+			$(document).ready(function(){
+				//convert the javascript array to jquery object
+				var $arrData = $(arrData);
+				var tempUserID="";
+				var tempDept="";
+				var tempVar="";
+				// iterate the jquery object which has a list of items
+				$.each($arrData, function(index, item){
+					tempVar= String.format(trTemplate, item.BNAME,item.NAME_FIRST,item.NAME_LAST,item.NAME_TEXT,item.DEPARTMENT,item.DEFLT_COMM,item.SMTP_ADDR);
+					$("#contentBody").append(tempVar);
+
+					if(item.BNAME){
+						tempUserID+=item.BNAME +",";
+					}
+
+					if(item.DEPARTMENT){
+						tempDept+=item.DEPARTMENT+",";
+					}
+				});
+
+				$("#inputUserID").text(tempUserID);
+				$("#inputDepartment").text(tempDept);
+
+				$('#contentTable').DataTable( {
+			        "pagingType": "full_numbers"
+			    });
+			});
+		</script>
+	</body>
+</html>
