@@ -130,8 +130,9 @@
         var folderPermissionURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";  //{0} -> site url, {1} -> file/folder relative url
         var filePermissionURI = "{0}/_api/Web/GetFileByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";
 
-        var uniquePermissionOfListURI = "{0}/_api/Web/Lists(guid'{1}')/HasUniqueRoleAssignments";  // {0} -> site url, {1} -> guid of list/library
-        var uniquePermissionOfFileOrFolderURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields/HasUniqueRoleAssignments"; //{0} -> site url, {1} -> file/folder relative url
+        var uniquePermissionOfListURI = "{0}/_api/Web/Lists(guid'{1}')/HasUniqueRoleAssignments";  // {0} -> site url, {1} -> guid of list/library - Not Used
+        var uniquePermissionOfFolderURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields/HasUniqueRoleAssignments"; //{0} -> site url, {1} -> folder relative url
+        var uniquePermissionOfFileURI = "{0}/_api/Web/GetFileByServerRelativeUrl('{1}')/ListItemAllFields/HasUniqueRoleAssignments"; //{0} -> site url, {1} -> file relative url
 
         //configurable values
         var tableId = "treeview";
@@ -184,7 +185,7 @@
 
                             //read data from results and add item to DOM
                             $.each(finalResults, function (index, item) {
-                                $(String.format(fileSubNodeTemplate, currentNodeId + "-" + (index + 1).toString(), currentNodeId, "leafNode", String.format(filePermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
+                                $(String.format(fileSubNodeTemplate, currentNodeId + "-" + (index + 1).toString(), currentNodeId, "leafNode", String.format(filePermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFileURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
                             });
                         }
                         var filesAmount = data.d.Files.results.length;
@@ -208,10 +209,10 @@
                             $.each(finalResults, function (index, item) {
                                 if (item.Name !== "Forms") {
                                     if (item.ItemCount > 0) {
-                                        $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "folderNode", String.format(itemsInFolder, webURL, item.ServerRelativeUrl), "1", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
+                                        $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "folderNode", String.format(itemsInFolder, webURL, item.ServerRelativeUrl), "1", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFolderURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
                                     }
                                     else {
-                                        $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "leafNode", "", "0", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
+                                        $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "leafNode", "", "0", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFolderURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
                                     }
                                 }
                             });
@@ -590,7 +591,7 @@
             });
         }
 
-        //check whether a list or library has unique permission
+        //check whether a list or library has unique permission - Not Used
         //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957f1e6-a35a-4888-a770-d5325c5cfe74')/HasUniqueRoleAssignments
         function checkUniqueRoleAssignmentForList(restURI) {
             $.ajax({
