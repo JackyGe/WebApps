@@ -1,614 +1,641 @@
 ﻿<!DOCTYPE html>
 <html>
-	<head>
-		<title>Permission Viewer</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="/SPRESTSolution/bootstrap-3.3.6/css/bootstrap.min.css">
-		<style>
-			#treeSiteStructure,#textAreaPermissions{
-				 height:400px;
-				 border: 1px solid #ddd;
-				 overflow:auto;
-				 border-top-left-radius:4px;
-				 border-top-right-radius:4px;
-				 border-bottom-left-radius:4px;
-				 border-bottom-right-radius:4px;
-			}
+<head>
+    <title>Permission Viewer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/SPRESTSolution/bootstrap-3.3.6/css/bootstrap.min.css">
+    <style>
+        #treeSiteStructure,#textAreaPermissions{
+             height:400px;
+             border: 1px solid #ddd;
+             overflow:auto;
+             border-top-left-radius:4px;
+             border-top-right-radius:4px;
+             border-bottom-left-radius:4px;
+             border-bottom-right-radius:4px;
+        }
 
-			.treeview-indent {
-				width:16px; 
-				height: 16px; 
-				display: inline-block; 
-				position: relative;
-			}
+        .treeview-indent {
+            width:16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
+        }
 
-			.treeview-expander {
-				width:16px; 
-				height: 16px; 
-				display: inline-block; 
-				position: relative; 
-				cursor: pointer;
-			}
-		</style>
-	</head>
-	<body>
-		<h2 style="text-align:center">Welcome to Permission Viewer</h2>
-		<br/>
-		<div id="divPermissionViewer" class="container">
-			<div id="rowSiteUrl" class="form-horizontal" role="form">
-				<div class="form-group">
-					<label for="textSiteURL" class="col-sm-2 control-label">SharePoint Site:</label>
-					<div class="col-sm-9">
-						<input type="text" id="textSiteURL" class="form-control"/>
-					</div>
-					<div class="col-sm-1">
-						<input type="button" id="btnLoadSite" class="btn btn-default" value="Load"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="textSelectUser" class="col-sm-2 control-label">Select user:</label>
-					<div class="col-sm-3">
-						<select id="selectUser" class="form-control"></select>
-					</div>
-					<div class="col-sm-1">
-					</div>
-					<div class="col-sm-1" style="text-align:center">
-						<label class="control-label">- or -</label>
-					</div>
-					<label for="textSelectGroup" class="col-sm-2 control-label">Select group:</label>
-					<div class="col-sm-3">
-						<select id="selectGroup" class="form-control"></select>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div id="divSiteStructure" class="col-sm-6">
-					<label style="font-size:21px">Site Structure:</label>
-					<div id="treeSiteStructure">
-						<div id="treeviewDIV">
-							<table class="tree" id="treeview">
-						        
-						    </table>
-					    </div>
-					</div>
-				</div>
-				<div id="divPermissions" class="col-sm-6">
-					<label style="font-size:21px">Permissions:</label>
-					<div id="textAreaPermissions">
-					</div>
-				</div>
-			</div>
-		</div>
-		<br/>
-		<div id="errorMsgDIV">
-		
-		</div>
-		<script type="text/javascript" src="/SPRESTSolution/jQuery/jquery-1.11.1.min.js"></script>
-		<script src="/SPRESTSolution/bootstrap-3.3.6/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="/SPRESTSolution/js/treeview.js"></script>
-		<script type="text/javascript">
+        .treeview-expander {
+            width:16px;
+            height: 16px;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center">Welcome to Permission Viewer</h2>
+    <br />
+    <div id="divPermissionViewer" class="container">
+        <div id="rowSiteUrl" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="textSiteURL" class="col-sm-2 control-label">SharePoint Site:</label>
+                <div class="col-sm-9">
+                    <input type="text" id="textSiteURL" class="form-control" />
+                </div>
+                <div class="col-sm-1">
+                    <input type="button" id="btnLoadSite" class="btn btn-default" value="Load" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="textSelectUser" class="col-sm-2 control-label">Select user:</label>
+                <div class="col-sm-3">
+                    <select id="selectUser" class="form-control"></select>
+                </div>
+                <div class="col-sm-1">
+                </div>
+                <div class="col-sm-1" style="text-align:center">
+                    <label class="control-label">- or -</label>
+                </div>
+                <label for="textSelectGroup" class="col-sm-2 control-label">Select group:</label>
+                <div class="col-sm-3">
+                    <select id="selectGroup" class="form-control"></select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="divSiteStructure" class="col-sm-6">
+                <label style="font-size:21px">Site Structure:</label>
+                <div id="treeSiteStructure">
+                    <div id="treeviewDIV">
+                        <table class="tree" id="treeview"></table>
+                    </div>
+                </div>
+            </div>
+            <div id="divPermissions" class="col-sm-6">
+                <label style="font-size:21px">Permissions:</label>
+                <div id="textAreaPermissions">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="errorMsgDIV">
 
-            /*-------------------------------------------------Public methods and variables------------------------------------------------*/
-			//add a method to String type
-			String.format = function() {
-	            // The string containing the format items (e.g. "{0}")
-	            // will and always has to be the first argument.
-	            var theString = arguments[0];
-	            
-	            // start with the second argument (i = 1)
-	            for (var i = 1; i < arguments.length; i++) {
-	                // "gm" = RegEx options for Global search (more than one instance)
-	                // and for Multiline search
-	                var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
-	                theString = theString.replace(regEx, arguments[i]);
-	            }
-	            return theString;
-	        }
+    </div>
+    <script type="text/javascript" src="/SPRESTSolution/jQuery/jquery-2.1.4.min.js"></script>
+    <script src="/SPRESTSolution/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/SPRESTSolution/js/treeview.js"></script>
+    <script type="text/javascript">
 
-            //template
-			var userTemplate = "<option value=\"{0}\" data-loginName=\"{1}\" data-groupsURI=\"{2}\">{3}</option>";
-			var groupTemplate = "<option value=\"{0}\" data-usersURI=\"{1}\">{2}</option>";
-			var rootTemplate = "<tr class=\"treeview-{0} rootNode\"><td>{1}</td></tr>";
-			var listSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-authURI=\"{3}\" data-uniquePermission={4}>{5}</a></td></tr>";
-			var librarySubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" data-authURI=\"{5}\" data-uniquePermission={6}>{7}</a></td></tr>";
-			var siteSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\"><td><a href=\"#\" data-authURI=\"{4}\">{5}</a></td></tr>";
-			var groupSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-usersURI=\"{3}\" data-groupId=\"{4}\">{5}</a></td></tr>";
-			var folderSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" data-authURI=\"{5}\" data-uniquePermission={6}>{7}</a></td></tr>";
-			var fileSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-authURI=\"{3}\" data-uniquePermission={4}>{5}</a></td></tr>";
+        /*-------------------------------------Public methods and variables---------------------------*/
+        //add a method to String type
+        String.format = function () {
+            // The string containing the format items (e.g. "{0}")
+            // will and always has to be the first argument.
+            var theString = arguments[0];
 
-            //REST API
-			var subSitesURI = "/_api/Web/WebInfos?$orderby=Title desc";
-			var listLibURI = "/_api/Web/lists?$filter=Hidden ne true&$expand=RootFolder,HasUniqueRoleAssignments&$select=Title,Id,ParentWebUrl,BaseType,Items,RoleAssignments,ItemCount,RootFolder/ServerRelativeUrl,RootFolder/ItemCount,HasUniqueRoleAssignments&$orderby=Title desc";
-			var siteUsersURI = "/_api/Web/siteusers?$filter=IsHiddenInUI eq false and PrincipalType eq 1";
-			var siteGroupsURI = "/_api/web/roleassignments/groups?$filter=IsHiddenInUI eq false and PrincipalType eq 8";
-			var sitePermissionsURI = "/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false";
-            //get permission of a list/library
-			var listPermissionURI = "{0}/_api/Web/Lists(guid'{1}')?$filter=RoleAssignments/Member/IsHiddenInUI eq false&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups";
+            // start with the second argument (i = 1)
+            for (var i = 1; i < arguments.length; i++) {
+                // "gm" = RegEx options for Global search (more than one instance)
+                // and for Multiline search
+                var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
+                theString = theString.replace(regEx, arguments[i]);
+            }
+            return theString;
+        }
 
-			var usersInGroupURI = "{0}/_api/Web/SiteGroups/GetById({1})/Users"; //{0} -> site url, {1} -> group ID
-			var itemsInListOrLibURI = "{0}/_api/Web/Lists(guid'{1}')/Items"; //{0} -> site url, {1} -> guid of list/lib
-			var itemsInFolder = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')?$expand=Folders,Files&$select=Folders/Name,Folders/ServerRelativeUrl,Folders/ItemCount,Files/Name,Files/ServerRelativeUrl"; //{0} -> site url, {1} -> folder server relative url
-			var folderPermissionURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";  //{0} -> site url, {1} -> file/folder relative url
-			var filePermissionURI = "{0}/_api/Web/GetFileByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";
+        //template
+        var userTemplate = "<option value=\"{0}\" data-loginName=\"{1}\" data-groupsURI=\"{2}\">{3}</option>";
+        var groupTemplate = "<option value=\"{0}\" data-usersURI=\"{1}\">{2}</option>";
+        var rootTemplate = "<tr class=\"treeview-{0} rootNode\"><td>{1}</td></tr>";
+        var listSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-authURI=\"{3}\" data-uniquePermission={4}>{5}</a></td></tr>";
+        var librarySubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" data-authURI=\"{5}\" data-uniquePermission={6}>{7}</a></td></tr>";
+        var siteSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\"><td><a href=\"#\" data-authURI=\"{4}\">{5}</a></td></tr>";
+        var groupSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-usersURI=\"{3}\" data-groupId=\"{4}\">{5}</a></td></tr>";
+        var folderSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" data-authURI=\"{5}\" data-uniquePermission={6}>{7}</a></td></tr>";
+        var fileSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-authURI=\"{3}\" data-uniquePermission={4}>{5}</a></td></tr>";
 
-			var uniquePermissionOfListURI = "{0}/_api/Web/Lists(guid'{1}')/HasUniqueRoleAssignments";  // {0} -> site url, {1} -> guid of list/library
-			var uniquePermissionOfFileOrFolderURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields/HasUniqueRoleAssignments"; //{0} -> site url, {1} -> file/folder relative url
+        //REST API
+        var subSitesURI = "/_api/Web/WebInfos?$orderby=Title desc";
+        var listLibURI = "/_api/Web/lists?$filter=Hidden ne true&$expand=RootFolder,HasUniqueRoleAssignments&$select=Title,Id,ParentWebUrl,BaseType,Items,RoleAssignments,ItemCount,RootFolder/ServerRelativeUrl,RootFolder/ItemCount,HasUniqueRoleAssignments&$orderby=Title desc";
+        var siteUsersURI = "/_api/Web/siteusers?$filter=IsHiddenInUI eq false and PrincipalType eq 1";
+        var siteGroupsURI = "/_api/web/roleassignments/groups?$filter=IsHiddenInUI eq false and PrincipalType eq 8";
+        var sitePermissionsURI = "/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false";
+        //get permission of a list/library
+        var listPermissionURI = "{0}/_api/Web/Lists(guid'{1}')?$filter=RoleAssignments/Member/IsHiddenInUI eq false&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups";
 
-			var tableId = "treeview";
-			var rootNodesArr = ["Lists", "Libraries", "Sites", "Groups"];
-			var rootNodesClassArr = ["treeview-1", "treeview-2", "treeview-3", "treeview-4"];
-			var rootNodesAsParentClassArr = ["treeview-parent-1", "treeview-parent-2", "treeview-parent-3", "treeview-parent-4"];
-			var hostURL, webURL; //web absolute url
-			var treeview;
+        var usersInGroupURI = "{0}/_api/Web/SiteGroups/GetById({1})/Users"; //{0} -> site url, {1} -> group ID
+        var itemsInListOrLibURI = "{0}/_api/Web/Lists(guid'{1}')/Items"; //{0} -> site url, {1} -> guid of list/lib
+        var itemsInFolder = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')?$expand=Folders,Files&$select=Folders/Name,Folders/ServerRelativeUrl,Folders/ItemCount,Files/Name,Files/ServerRelativeUrl"; //{0} -> site url, {1} -> folder server relative url
+        var folderPermissionURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";  //{0} -> site url, {1} -> file/folder relative url
+        var filePermissionURI = "{0}/_api/Web/GetFileByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";
 
-            /*------------------------------------------------generate tree view-------------------------------------------------------------------*/
-		   	//run after page load
-			$(function () {
-			    //create an instance of $.Treeview class
-				treeview = new $.Treeview($("#"+tableId));
-				
-				//add click event for expander
-				$("#"+ tableId).on("click", ".treeview-expander", function(){
-				    var $currentNode = $(this).closest("tr");
+        var uniquePermissionOfListURI = "{0}/_api/Web/Lists(guid'{1}')/HasUniqueRoleAssignments";  // {0} -> site url, {1} -> guid of list/library
+        var uniquePermissionOfFileOrFolderURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields/HasUniqueRoleAssignments"; //{0} -> site url, {1} -> file/folder relative url
 
-				    if (!$currentNode.hasClass("rootNode") && $currentNode.hasClass("treeview-collapsed") && $currentNode.attr("data-firstload") === "1") {
-					    //load data of child nodes
-					    generateNewNodes($currentNode);
-					}
-				    //add toggle event for expanders
-					treeview.toggle($currentNode);
-				});
+        //configurable values
+        var tableId = "treeview";
+        var rootNodesArr = ["Lists", "Libraries", "Sites", "Groups"];
+        var rootNodesClassArr = ["treeview-1", "treeview-2", "treeview-3", "treeview-4"];
+        var rootNodesAsParentClassArr = ["treeview-parent-1", "treeview-parent-2", "treeview-parent-3", "treeview-parent-4"];
+        var hostURL, webURL; //web absolute url
+        var treeview;
 
-				//generate new new nodes in style of tree view
-				function generateNewNodes($currentNode) {
-				    //load data of sub nodes when clicking expand icon
-				    var currentNodeId = treeview.getNodeId($currentNode);
+        /*---------------------------------------generate treeview--------------------------------------------*/
+        //run after page load
+        $(function () {
+            //create an instance of $.Treeview class
+            treeview = new $.Treeview($("#" + tableId));
 
-				    getItemsInOneFolder($currentNode.data("childnodesuri")).done(function (data) {
-				        if (data.d) {
-				            //it is necessary to add a condition, or there will be an error because results will be undefined when there is no file or folder, 
-				            if (data.d.Files.results.length > 0) {
-				                $.each(data.d.Files.results, function (index, item) {
-				                    $(String.format(fileSubNodeTemplate, currentNodeId + "-" + (index + 1).toString(), currentNodeId, "leafNode", String.format(filePermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
-				                });
-				            }
-				            var filesAmount = data.d.Files.results.length;
+            //add click event for expander
+            $("#" + tableId).on("click", ".treeview-expander", function () {
+                var $currentNode = $(this).closest("tr");
 
-				            if (data.d.Folders.results.length > 0) {
-				                $.each(data.d.Folders.results, function (index, item) {
-				                    if (item.Name !== "Forms") {
-				                        if (item.ItemCount > 0) {
-				                            $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "folderNode", String.format(itemsInFolder, webURL, item.ServerRelativeUrl), "1", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
-				                        }
-				                        else {
-				                            $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "leafNode", "", "0", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
-				                        }
-				                    }
-				                });
-				            }
-				        }
-				    }).done(function (data) {
-				        renderNewNode(initNewNode($currentNode));
+                if (!$currentNode.hasClass("rootNode") && $currentNode.hasClass("treeview-collapsed") && $currentNode.attr("data-firstload") === "1") {
+                    //load data of child nodes
+                    generateNewNodes($currentNode);
+                }
+                //add toggle event for expanders
+                treeview.toggle($currentNode);
+            });
 
-				        $currentNode.attr("data-firstload", "0");
-				    })
-				    .fail(function(xhr){
-				        failEvent(xhr);
-				    });
-			   	}
+            //generate new new nodes in style of tree view
+            function generateNewNodes($currentNode) {
+                //load data of sub nodes when clicking expand icon
+                var currentNodeId = treeview.getNodeId($currentNode);
+                getItemsInOneFolder($currentNode.data("childnodesuri")).done(function (data) {
+                    if (data.d) {
+                        //it is necessary to add a condition, or there will be an error because results will be undefined when there is no file or folder,
+                        if (data.d.Files.results.length > 0) {
+                            //sort
+                            var originalResults = data.d.Files.results;
+                            var options = {};
 
-			   	//initiate nodes, expander, and indent
-			   	function initNewNode($node){
-			   	    treeview.initNodes(treeview.getChildNodes($node));
-			   	    treeview.initIndent(treeview.initExpander($node));
-			   	    return $node;
-			   	}
+                            $.each(originalResults, function (index, item) {
+                                options[item.Name] = item;
+                            });
+                            var keys = Object.keys(options).sort().reverse();
 
-			   	function renderNewNode($node) {
-			   	    //if parent colapsed we hidden
-			   	    if ($.Treeview.prototype.isOneOfParentsCollapsed($node)) {
-			   	        $node.hide();
-			   	    } else {
-			   	        $node.show();
-			   	    }
-			   	    if (!$.Treeview.prototype.isLeaf($node)) {
-			   	        $.Treeview.prototype.renderExpander($node);
-			   	        $.Treeview.prototype.renderWithinExpander($.Treeview.prototype.getChildNodes($node));
-			   	    }
+                            //get the results after sort
+                            var finalResults = {};
+                            $.each(keys, function (i, key) {
+                                finalResults[i] = options[key];
+                            });
 
-			   	    return $node;
-			   	}
-
-                //generate all rest uri
-			   	function generateRESTURI(siteUrl, arrSiteURL) {
-			   	    hostURL = arrSiteURL[0] + "//" + arrSiteURL[2];
-			   	    webURL = siteUrl;
-			   	}
-
-			   	//button click event
-			   	$("#btnLoadSite").on("click", function(){
-			   	    var webAbsoluteUrl = $("#textSiteURL").val().trim(); //_spPageContextInfo.webAbsoluteUrl;
-			   	    if (webAbsoluteUrl && webAbsoluteUrl.length>7) {
-			   	        var arrWebURL = webAbsoluteUrl.split("/");
-			   	        if (arrWebURL && arrWebURL.length > 2) {
-                            //generate url and uri
-			   	            generateRESTURI(webAbsoluteUrl, arrWebURL);
-			   	            //load data and generate tree view
-			   	            loadSiteStructure(treeview);
-			   	        }
-			   	        else {
-			   	            alert("Please input a correct site url!");
-			   	        }
-			   	    }
-			   	});
-			});
-
-            /*------------------------------- clicking 'Load' button - Load data from site, and bind to control----------------------------------------*/
-			//load data from the specific site, including users, groups, lists, libraries, and subsites
-			function loadSiteStructure(treeviewObj) {
-			    var currentUserRestUrl = webURL + "/_api/Web/CurrentUser";
-				var isAdmin = false;
-				clearExistingData();
-
-				checkSiteAdmin(currentUserRestUrl).done(function(data){
-					if(data.d){
-                        isAdmin = data.d.IsSiteAdmin; // true or false
-                        if (isAdmin) {
-                            alert("You are site collection administrator!");
+                            //read data from results and add item to DOM
+                            $.each(finalResults, function (index, item) {
+                                $(String.format(fileSubNodeTemplate, currentNodeId + "-" + (index + 1).toString(), currentNodeId, "leafNode", String.format(filePermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
+                            });
                         }
-                        else{
-                            alert("You are not a site collection administrator!");
+                        var filesAmount = data.d.Files.results.length;
+
+                        if (data.d.Folders.results.length > 0) {
+                            //sort
+                            var originalResults = data.d.Folders.results;
+                            var options = {};
+
+                            $.each(originalResults, function (index, item) {
+                                options[item.Name] = item;
+                            });
+                            var keys = Object.keys(options).sort().reverse();
+                            //get the results after sort
+                            var finalResults = {};
+                            $.each(keys, function (i, key) {
+                                finalResults[i] = options[key];
+                            });
+
+                            //read data from results and add item to DOM
+                            $.each(finalResults, function (index, item) {
+                                if (item.Name !== "Forms") {
+                                    if (item.ItemCount > 0) {
+                                        $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "folderNode", String.format(itemsInFolder, webURL, item.ServerRelativeUrl), "1", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
+                                    }
+                                    else {
+                                        $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "leafNode", "", "0", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), "**UNIQUEPermission**", item.Name)).insertAfter($currentNode);
+                                    }
+                                }
+                            });
                         }
-
-					    //add root nodes firstly
-                        loadRootNodes($("#" + tableId));
-
-					    //load users, groups, and site structure, then render treeview
-                        $.when(loadSiteUsers(), loadSiteGroups(), loadSubSites(), loadListsAndLibs()).done(function () {
-                            treeviewObj.InitTreeview(); //render tree view style
-                        });
-					}
-					else {
-					    alert("Please input a correct site url!");
-					}
-				})
-				.fail(function(xhr){
-				    failEvent(xhr);
-				});
-			}
-
-            //load site users
-			function loadSiteUsers() {
-			    return getAllUsers().done(function (data) {
-			        if (data.d.results) {
-			            var $selector = $("#selectUser");
-			            $selector.find("option").remove();
-
-			            $.each(data.d.results, function (index, item) {
-			                $selector.append($(String.format(userTemplate, item.Id, item.LoginName, item.Groups.__deferred.uri, item.Title)));
-			                //item.Title
-			                //item.Id
-			                //item.IsHiddenInUI
-			                //item.LoginName
-			                //item.Email
-			                //item.IsSiteAdmin
-			                //item.Groups.__deferred.uri --> http://isp.emea.festo.net/sites/jstraining/_api/Web/GetUserById(29)/Groups --> used to get all groups which current user exists in
-			            });
-			        }
-			    })
+                    }
+                }).done(function (data) {
+                    renderNewNode(initNewNode($currentNode));
+                    $currentNode.attr("data-firstload", "0");
+                })
                 .fail(function (xhr) {
                     failEvent(xhr);
                 });
-			}
+            }
 
-            //load site groups - sequence: 4
-			function loadSiteGroups(){
-			    return getAllUserGroups().done(function (data) {
-			                if (data.d.results) {
-			                    var $selector = $("#selectGroup");
-			                    $selector.find("option").remove();
-			                    $("#treeview").find("tr[class*='treeview-parent-4']").remove();
+            //initiate nodes, expander, and indent for dynamically added nodes
+            function initNewNode($node) {
+                treeview.initNodes(treeview.getChildNodes($node));
+                treeview.initIndent(treeview.initExpander($node));
+                return $node;
+            }
 
-			                    $.each(data.d.results, function (index, item) {
-                                    //add options for 'Select Group' selector
-			                        $selector.append($(String.format(groupTemplate, item.Id, item.Users.__deferred.uri, item.Title)));
-			                        //item.Users.__deferred.uri --> http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(7)/Users
+            //生成动态添加的节点 ** render dynamically added nodes
+            function renderNewNode($node) {
+                //if parent colapsed we hidden
+                if ($.Treeview.prototype.isOneOfParentsCollapsed($node)) {
+                    $node.hide();
+                } else {
+                    $node.show();
+                }
+                if (!$.Treeview.prototype.isLeaf($node)) {
+                    $.Treeview.prototype.renderExpander($node);
+                    $.Treeview.prototype.renderWithinExpander($.Treeview.prototype.getChildNodes($node));
+                }
 
-                                    //add subnodes for Groups in Site Structure
-			                        $(String.format(groupSubNodeTemplate, "4-" + (index + 1).toString(), "4", "leafNode", item.Users.__deferred.uri, item.Id, item.Title)).insertAfter($(".treeview-4"));
-			                    });
-			                }
-			            })
-                        .fail(function (xhr) {
-			                failEvent(xhr);
-			            });
-			}
+                return $node;
+            }
 
-            //load root nodes for site structure, containing Lists, Libraries, Sites, and Groups
-			function loadRootNodes($tableObj) {
-			    for (var i = 0; i < 4; i++) {
-			        $tableObj.append($(String.format(rootTemplate, (i + 1).toString(), rootNodesArr[i])));
-			    }
-			    return $tableObj;
-			}
+            //generate all rest uri
+            function generateRESTURI(siteUrl, arrSiteURL) {
+                hostURL = arrSiteURL[0] + "//" + arrSiteURL[2];
+                webURL = siteUrl;
+            }
 
-            //load sub sites - sequence: 3
-			function loadSubSites() {
-			    return getSubSites().done(function (data) {
-			                if (data.d.results) {
-			                    $("#treeview").find("tr[class*='" + rootNodesAsParentClassArr[2] + "']").remove();
-			                    var parentNodeId = treeview.getNodeId($("." + rootNodesClassArr[2]));
-			                    $.each(data.d.results, function (index, item) {
-			                        $(String.format(siteSubNodeTemplate, parentNodeId + "-" + (index + 1).toString(), parentNodeId, "leafNode", hostURL + item.ServerRelativeUrl + subSitesURI, hostURL + item.ServerRelativeUrl + sitePermissionsURI, item.Title)).insertAfter($(".treeview-" + parentNodeId));
-			                    });
-			                }
-			            })
-			            .fail(function (xhr) {
-			                failEvent(xhr);
-			            });
-			}
+            //button click event
+            $("#btnLoadSite").on("click", function () {
+                var webAbsoluteUrl = $("#textSiteURL").val().trim(); //_spPageContextInfo.webAbsoluteUrl;
+                if (webAbsoluteUrl && webAbsoluteUrl.length > 7) {
+                    var arrWebURL = webAbsoluteUrl.split("/");
+                    if (arrWebURL && arrWebURL.length > 2) {
+                        //generate url and uri
+                        generateRESTURI(webAbsoluteUrl, arrWebURL);
+                        //load data and generate tree view
+                        loadSiteStructure(treeview);
+                    }
+                    else {
+                        alert("Please input a correct site url!");
+                    }
+                }
+            });
+        });
 
-            //load lists and libraries
-			function loadListsAndLibs() {
-			    return getListsAndLibraries().done(function (data) {
-			        if (data.d.results) {
-                        //remove existing sub nodes
-			            $("#treeview").find("tr[class*='" + rootNodesAsParentClassArr[0] + "']").remove(); //lists
-			            $("#treeview").find("tr[class*='" + rootNodesAsParentClassArr[1] + "']").remove(); //libraries
+        /*--------- clicking 'Load' button - Load data from site, and bind to control---------------------*/
+        //load data from the specific site, including users, groups, lists, libraries, and subsites
+        function loadSiteStructure(treeviewObj) {
+            var currentUserRestUrl = webURL + "/_api/Web/CurrentUser";
+            var isAdmin = false;
+            clearExistingData();
 
-                        //get root nodes for list and library
-			            var parentListNodeId = treeview.getNodeId($("." + rootNodesClassArr[0])); //lists
-			            var parentLibNodeId = treeview.getNodeId($("." + rootNodesClassArr[1])); //libraries
+            checkSiteAdmin(currentUserRestUrl).done(function (data) {
+                if (data.d) {
+                    isAdmin = data.d.IsSiteAdmin; // true or false
+                    if (isAdmin) {
+                        alert("You are site collection administrator!");
+                    }
+                    else {
+                        alert("You are not a site collection administrator!");
+                    }
 
-			            $.each(data.d.results, function (index, item) {
-                            // 0 is list, 1 is library, 4 is survey, and 5 is issuetracking
-			                if (item.BaseType != 1) {
-			                    $(String.format(listSubNodeTemplate, parentListNodeId + "-" + (index + 1).toString(), parentListNodeId, "leafNode", String.format(listPermissionURI, webURL, item.Id), item.HasUniqueRoleAssignments, item.Title)).insertAfter($(".treeview-" + parentListNodeId));
-			                }
-			                else {
-			                    if (item.ItemCount > 0) {
-                                    //if(item.Name)
-			                        $(String.format(librarySubNodeTemplate, parentLibNodeId + "-" + (index + 1).toString(), parentLibNodeId, "folderNode", String.format(itemsInFolder, webURL, item.RootFolder.ServerRelativeUrl), "1", String.format(listPermissionURI, webURL, item.Id), item.HasUniqueRoleAssignments, item.Title)).insertAfter($(".treeview-" + parentLibNodeId));
-			                    }
-			                    else {
-			                        $(String.format(librarySubNodeTemplate, parentLibNodeId + "-" + (index + 1).toString(), parentLibNodeId, "leafNode", "", "0", String.format(listPermissionURI, webURL, item.Id), item.HasUniqueRoleAssignments, item.Title)).insertAfter($(".treeview-" + parentLibNodeId));
-			                    }
-			                }
-			            });
-			        }
-			    })
-                .fail(function (xhr) {
-                    failEvent(xhr);
-                });  
-			}
-            
-            //clear existing data of each control
-			function clearExistingData() {
-			    $("#" + tableId).find("tr").remove();
-			    $("#selectUser").find("option").remove();
-			    $("#selectGroup").find("option").remove();
-			    $("#textAreaPermissions").val("").text("");
-			}
+                    //add root nodes firstly
+                    loadRootNodes($("#" + tableId));
 
-            //failed event
-			function failEvent(xhr) {
-			    alert(xhr.status + ': ' + xhr.statusText);
-			}
+                    //load users, groups, and site structure, then render treeview
+                    $.when(loadSiteUsers(), loadSiteGroups(), loadSubSites(), loadListsAndLibs()).done(function () {
+                        treeviewObj.InitTreeview(); //render tree view style
+                    });
+                }
+                else {
+                    alert("Please input a correct site url!");
+                }
+            })
+            .fail(function (xhr) {
+                failEvent(xhr);
+            });
+        }
 
-            /*--------------------------------------------------SharePoint REST API------------------------------------------------------------------*/
+        //load site users
+        function loadSiteUsers() {
+            return getAllUsers().done(function (data) {
+                if (data.d.results) {
+                    var $selector = $("#selectUser");
+                    $selector.find("option").remove();
 
-			//get all sub sites
-			function getSubSites(){
-			    var subSitesInfoURI = webURL + subSitesURI;
-				return $.ajax({
-					        url: subSitesInfoURI,
-					        type: "GET",
-					        headers: {"Accept": "application/json;odata=verbose"}
-				        });
-			}
+                    $.each(data.d.results, function (index, item) {
+                        $selector.append($(String.format(userTemplate, item.Id, item.LoginName, item.Groups.__deferred.uri, item.Title)));
+                        //item.Title
+                        //item.Id
+                        //item.IsHiddenInUI
+                        //item.LoginName
+                        //item.Email
+                        //item.IsSiteAdmin
+                        //item.Groups.__deferred.uri --> http://isp.emea.festo.net/sites/jstraining/_api/Web/GetUserById(29)/Groups --> used to get all groups which current user exists in
+                    });
+                }
+            })
+            .fail(function (xhr) {
+                failEvent(xhr);
+            });
+        }
 
-			//get all lists and libraries
-			function getListsAndLibraries(){
-			    var listsInfoURI = webURL + listLibURI;
-				return $.ajax({
-					        url: listsInfoURI,
-					        type: "GET",
-					        headers: {"Accept": "application/json;odata=verbose"}
-				        });
-			}
+        //load site groups - sequence: 4
+        function loadSiteGroups() {
+            return getAllUserGroups().done(function (data) {
+                if (data.d.results) {
+                    var $selector = $("#selectGroup");
+                    $selector.find("option").remove();
+                    $("#treeview").find("tr[class*='treeview-parent-4']").remove();
 
-            //get all users
-			function getAllUsers() {
-			    var userInfoURI = webURL + siteUsersURI;
-			    return $.ajax({
-			                url: userInfoURI,
-			                type: "GET",
-			                headers: { "Accept": "application/json;odata=verbose" }
-			            });
-			}
+                    $.each(data.d.results, function (index, item) {
+                        //add options for 'Select Group' selector
+                        $selector.append($(String.format(groupTemplate, item.Id, item.Users.__deferred.uri, item.Title)));
+                        //item.Users.__deferred.uri --> http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(7)/Users
 
-			//get all groups
-			function getAllUserGroups(){
-			    var groupsInfoURI = webURL + siteGroupsURI;
-				return $.ajax({
-					        url: groupsInfoURI,
-					        type: "GET",
-					        headers: {"Accept": "application/json;odata=verbose"}
-				        });
-			}
+                        //add subnodes for Groups in Site Structure
+                        $(String.format(groupSubNodeTemplate, "4-" + (index + 1).toString(), "4", "leafNode", item.Users.__deferred.uri, item.Id, item.Title)).insertAfter($(".treeview-4"));
+                    });
+                }
+            }).fail(function (xhr) {
+                failEvent(xhr);
+            });
+        }
 
-			//get users in one group
-			// restURI should be like http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(7)/Users
-			function getUsersInOneGroup(restURI){
-				$.ajax({
-					url: restURI,
-					type: "GET",
-					headers: {"Accept": "application/json;odata=verbose"},
-					success: function(data){
-					  if(data.d.results){
-					      $.each(data.d.results, function(index, item){
-					      		//item.Title
-					      		//item.LoginName
-					      		//item.Email
-					      });
-					  }
-					},
-					error: function(xhr){
-					  alert(xhr.status+': '+xhr.statusText);
-					}
-				});
-			}
+        //load root nodes for site structure, containing Lists, Libraries, Sites, and Groups
+        function loadRootNodes($tableObj) {
+            for (var i = 0; i < 4; i++) {
+                $tableObj.append($(String.format(rootTemplate, (i + 1).toString(), rootNodesArr[i])));
+            }
+            return $tableObj;
+        }
 
-			//get all items inside a list or library: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957F1E6-A35A-4888-A770-D5325C5CFE74')/Items
-			function getItemsInOneList(restURI){
-				$.ajax({
-					url: restURI,
-					type: "GET",
-					headers: {"Accept": "application/json;odata=verbose"},
-					success: function(data){
-					  if(data.d.results){
-					      $.each(data.d.results, function(index, item){
-					      		//item.FileSystemObjectType 0 is file, 1 is folder
-					      		//item.Title
-					      });
-					  }
-					},
-					error: function(xhr){
-					  alert(xhr.status+': '+xhr.statusText);
-					}
-				});
-			}
+        //load sub sites - sequence: 3
+        function loadSubSites() {
+            return getSubSites().done(function (data) {
+                if (data.d.results) {
+                    $("#treeview").find("tr[class*='" + rootNodesAsParentClassArr[2] + "']").remove();
+                    var parentNodeId = treeview.getNodeId($("." + rootNodesClassArr[2]));
+                    $.each(data.d.results, function (index, item) {
+                        $(String.format(siteSubNodeTemplate, parentNodeId + "-" + (index + 1).toString(), parentNodeId, "leafNode", hostURL + item.ServerRelativeUrl + subSitesURI, hostURL + item.ServerRelativeUrl + sitePermissionsURI, item.Title)).insertAfter($(".treeview-" + parentNodeId));
+                    });
+                }
+            })
+                    .fail(function (xhr) {
+                        failEvent(xhr);
+                    });
+        }
 
-			//get all folders and files inside a folder (without recursive)
-			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents')?$expand=Folders,Files
-			function getItemsInOneFolder(itemsInFolderURI) {
-				return $.ajax({
-				            url: itemsInFolderURI,
-					        type: "GET",
-					        headers: {"Accept": "application/json;odata=verbose"}
-				        });
-			}
+        //load lists and libraries
+        function loadListsAndLibs() {
+            return getListsAndLibraries().done(function (data) {
+                if (data.d.results) {
+                    //remove existing sub nodes
+                    $("#treeview").find("tr[class*='" + rootNodesAsParentClassArr[0] + "']").remove(); //lists
+                    $("#treeview").find("tr[class*='" + rootNodesAsParentClassArr[1] + "']").remove(); //libraries
 
-			//get site permissions
-			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member
-			// PrincipalType = 8 means it is a group, if PrincipalType equals to 1, it is a user
-			function getSitePermissions(restURI){
-				$.ajax({
-					url: restURI,
-					type: "GET",
-					headers: {"Accept": "application/json;odata=verbose"},
-					success: function(data){
-					  if(data.d.results){
-					      $.each(data.d.results, function(index, item){
-					      		//item.Member.Title
-					      		//item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
-					      });
-					  }
-					},
-					error: function(xhr){
-					  alert(xhr.status+': '+xhr.statusText);
-					}
-				});
-			}
+                    //get root nodes for list and library
+                    var parentListNodeId = treeview.getNodeId($("." + rootNodesClassArr[0])); //lists
+                    var parentLibNodeId = treeview.getNodeId($("." + rootNodesClassArr[1])); //libraries
 
-            //get permissions of a list or library
-            //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'7af0f479-2f5a-4f6b-83f9-722afc05c595')?$filter=Hidden ne true and RoleAssignments/Member/IsHiddenInUI eq true&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings,HasUniqueRoleAssignments&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups,HasUniqueRoleAssignments
-			function getListPermissions(restURI){
-				$.ajax({
-					url: restURI,
-					type: "GET",
-					headers: {"Accept": "application/json;odata=verbose"},
-					success: function(data){
-					  if(data.d){
-					      
-					  }
-					},
-					error: function(xhr){
-					  alert(xhr.status+': '+xhr.statusText);
-					}
-				});
-			}
+                    $.each(data.d.results, function (index, item) {
+                        // 0 is list, 1 is library, 4 is survey, and 5 is issuetracking
+                        if (item.BaseType != 1) {
+                            $(String.format(listSubNodeTemplate, parentListNodeId + "-" + (index + 1).toString(), parentListNodeId, "leafNode", String.format(listPermissionURI, webURL, item.Id), item.HasUniqueRoleAssignments, item.Title)).insertAfter($(".treeview-" + parentListNodeId));
+                        }
+                        else {
+                            if (item.ItemCount > 0) {
+                                //if(item.Name)
+                                $(String.format(librarySubNodeTemplate, parentLibNodeId + "-" + (index + 1).toString(), parentLibNodeId, "folderNode", String.format(itemsInFolder, webURL, item.RootFolder.ServerRelativeUrl), "1", String.format(listPermissionURI, webURL, item.Id), item.HasUniqueRoleAssignments, item.Title)).insertAfter($(".treeview-" + parentLibNodeId));
+                            }
+                            else {
+                                $(String.format(librarySubNodeTemplate, parentLibNodeId + "-" + (index + 1).toString(), parentLibNodeId, "leafNode", "", "0", String.format(listPermissionURI, webURL, item.Id), item.HasUniqueRoleAssignments, item.Title)).insertAfter($(".treeview-" + parentLibNodeId));
+                            }
+                        }
+                    });
+                }
+            })
+            .fail(function (xhr) {
+                failEvent(xhr);
+            });
+        }
 
-			//get permissions of a file or folder, can't be used for a library
-			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents/Folder1')?$expand=ListItemAllFields/RoleAssignments/Member,ListItemAllFields/RoleAssignments/RoleDefinitionBindings,ListItemAllFields/RoleAssignments/Member/Users&$select=ServerRelativeUrl,ListItemAllFields/RoleAssignments/Member/Title,ListItemAllFields/RoleAssignments/Member/PrincipalType,ListItemAllFields/RoleAssignments/Member/Users/Title,ListItemAllFields/RoleAssignments/Member/Users/PrincipalType,ListItemAllFields/RoleAssignments/RoleDefinitionBindings/Name,ListItemAllFields/RoleAssignments/RoleDefinitionBindings/Order
-			function getItemPermissions(restURI){
-				$.ajax({
-					url: restURI,
-					type: "GET",
-					headers: {"Accept": "application/json;odata=verbose"},
-					success: function(data){
-					  if(data.d.ListItemAllFields.RoleAssignments.results){
-					      $.each(data.d.ListItemAllFields.RoleAssignments.results, function(index, item){
-					      	//item.Member.Title -> name of group or user
-					      	//item.Member.PrincipalType -> 8 is group, 1 is user
+        //clear existing data of each control
+        function clearExistingData() {
+            $("#" + tableId).find("tr").remove();
+            $("#selectUser").find("option").remove();
+            $("#selectGroup").find("option").remove();
+            $("#textAreaPermissions").val("").text("");
+        }
 
-					      	//get permission levles of a group/user
-					      	$.each(item.RoleDefinitionBindings.results, function(index, item){
-					      		//item.Name --> permission level name
-					      		//item.Order --> 1 to 160
-					      	});
+        //failed event
+        function failEvent(xhr) {
+            alert(xhr.status + ': ' + xhr.statusText);
+        }
 
-					      	if(item.Member.PrincipalType == 8){
-					      		$.each(item.Member.Users.results, function(index, item){
-						      		//item.Title --> user name
-						      	});
-					      	}
-					      });
-					  }
-					},
-					error: function(xhr){
-					  alert(xhr.status+': '+xhr.statusText);
-					}
-				});
-			}
+        /*---------------------------SharePoint REST API------------------------------------*/
+        //get all sub sites
+        function getSubSites() {
+            var subSitesInfoURI = webURL + subSitesURI;
+            return $.ajax({
+                url: subSitesInfoURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
+        }
 
-			//check whether a list or library has unique permission
-			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957f1e6-a35a-4888-a770-d5325c5cfe74')/HasUniqueRoleAssignments
-			function checkUniqueRoleAssignmentForList(restURI){
-				$.ajax({
-					url: restURI,
-					type: "GET",
-					headers: {"Accept": "application/json;odata=verbose"},
-					success: function(data){
-					  if(data.d){
-					      //data.d.HasUniqueRoleAssignments --> true or false
-					  }
-					},
-					error: function(xhr){
-					  alert(xhr.status+': '+xhr.statusText);
-					}
-				});
-			}
+        //get all lists and libraries
+        function getListsAndLibraries() {
+            var listsInfoURI = webURL + listLibURI;
+            return $.ajax({
+                url: listsInfoURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
+        }
 
-			//check whehter a file or folder has unique permissions
-			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents/Folder1')/ListItemAllFields/HasUniqueRoleAssignments
-			function checkUniqueRoleAssignmentForItem(restURI){
-				$.ajax({
-					url: restURI,
-					type: "GET",
-					headers: {"Accept": "application/json;odata=verbose"},
-					success: function(data){
-					  if(data.d){
-					      //data.d.HasUniqueRoleAssignments --> true or false
-					  }
-					},
-					error: function(xhr){
-					  alert(xhr.status+': '+xhr.statusText);
-					}
-				});
-			}
+        //get all users
+        function getAllUsers() {
+            var userInfoURI = webURL + siteUsersURI;
+            return $.ajax({
+                url: userInfoURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
+        }
 
-			//check whether current user is site collection administrator
-			//http://isp.emea.festo.net/sites/cn0jacky/_api/Web/CurrentUser
-			function checkSiteAdmin(restURI){
-				//var result = false;
-				return $.ajax({
-							url: restURI,
-							type: "GET",
-							headers: {"Accept": "application/json;odata=verbose"}
-						});
-			}
-		</script>
-	</body>
+        //get all groups
+        function getAllUserGroups() {
+            var groupsInfoURI = webURL + siteGroupsURI;
+            return $.ajax({
+                url: groupsInfoURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
+        }
+
+        //get users in one group
+        // restURI should be like http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(7)/Users
+        function getUsersInOneGroup(restURI) {
+            $.ajax({
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" },
+                success: function (data) {
+                    if (data.d.results) {
+                        $.each(data.d.results, function (index, item) {
+                            //item.Title
+                            //item.LoginName
+                            //item.Email
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                }
+            });
+        }
+
+        //get all items inside a list or library: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957F1E6-A35A-4888-A770-D5325C5CFE74')/Items
+        function getItemsInOneList(restURI) {
+            $.ajax({
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" },
+                success: function (data) {
+                    if (data.d.results) {
+                        $.each(data.d.results, function (index, item) {
+                            //item.FileSystemObjectType 0 is file, 1 is folder
+                            //item.Title
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                }
+            });
+        }
+
+        //get all folders and files inside a folder (without recursive)
+        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents')?$expand=Folders,Files
+        function getItemsInOneFolder(itemsInFolderURI) {
+            return $.ajax({
+                url: itemsInFolderURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
+        }
+
+        //get site permissions
+        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member
+        // PrincipalType = 8 means it is a group, if PrincipalType equals to 1, it is a user
+        function getSitePermissions(restURI) {
+            $.ajax({
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" },
+                success: function (data) {
+                    if (data.d.results) {
+                        $.each(data.d.results, function (index, item) {
+                            //item.Member.Title
+                            //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                }
+            });
+        }
+
+        //get permissions of a list or library
+        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'7af0f479-2f5a-4f6b-83f9-722afc05c595')?$filter=Hidden ne true and RoleAssignments/Member/IsHiddenInUI eq true&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings,HasUniqueRoleAssignments&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups,HasUniqueRoleAssignments
+        function getListPermissions(restURI) {
+            $.ajax({
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" },
+                success: function (data) {
+                    if (data.d) {
+
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                }
+            });
+        }
+
+        //get permissions of a file or folder, can't be used for a library
+        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents/Folder1')?$expand=ListItemAllFields/RoleAssignments/Member,ListItemAllFields/RoleAssignments/RoleDefinitionBindings,ListItemAllFields/RoleAssignments/Member/Users&$select=ServerRelativeUrl,ListItemAllFields/RoleAssignments/Member/Title,ListItemAllFields/RoleAssignments/Member/PrincipalType,ListItemAllFields/RoleAssignments/Member/Users/Title,ListItemAllFields/RoleAssignments/Member/Users/PrincipalType,ListItemAllFields/RoleAssignments/RoleDefinitionBindings/Name,ListItemAllFields/RoleAssignments/RoleDefinitionBindings/Order
+        function getItemPermissions(restURI) {
+            $.ajax({
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" },
+                success: function (data) {
+                    if (data.d.ListItemAllFields.RoleAssignments.results) {
+                        $.each(data.d.ListItemAllFields.RoleAssignments.results, function (index, item) {
+                            //item.Member.Title -> name of group or user
+                            //item.Member.PrincipalType -> 8 is group, 1 is user
+
+                            //get permission levles of a group/user
+                            $.each(item.RoleDefinitionBindings.results, function (index, item) {
+                                //item.Name --> permission level name
+                                //item.Order --> 1 to 160
+                            });
+
+                            if (item.Member.PrincipalType == 8) {
+                                $.each(item.Member.Users.results, function (index, item) {
+                                    //item.Title --> user name
+                                });
+                            }
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                }
+            });
+        }
+
+        //check whether a list or library has unique permission
+        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957f1e6-a35a-4888-a770-d5325c5cfe74')/HasUniqueRoleAssignments
+        function checkUniqueRoleAssignmentForList(restURI) {
+            $.ajax({
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" },
+                success: function (data) {
+                    if (data.d) {
+                        //data.d.HasUniqueRoleAssignments --> true or false
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                }
+            });
+        }
+
+        //check whehter a file or folder has unique permissions
+        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents/Folder1')/ListItemAllFields/HasUniqueRoleAssignments
+        function checkUniqueRoleAssignmentForItem(restURI) {
+            $.ajax({
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" },
+                success: function (data) {
+                    if (data.d) {
+                        //data.d.HasUniqueRoleAssignments --> true or false
+                    }
+                },
+                error: function (xhr) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                }
+            });
+        }
+
+        //check whether current user is site collection administrator
+        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/CurrentUser
+        function checkSiteAdmin(restURI) {
+            //var result = false;
+            return $.ajax({
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
+        }
+    </script>
+</body>
 </html>
