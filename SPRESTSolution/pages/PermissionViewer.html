@@ -237,9 +237,22 @@
             });
         }
 
-        //display security information
+        //display security information of list, library, site, folder or file
         function showItemSecurity(authURI, userLoginName, groupId) {
 
+        }
+
+        //show users in a certain group
+        function showUsersOfGroup(usersURI) {
+
+        }
+
+        function hideGroupsNodes(treeviewObj) {
+            treeviewObj.collapse($("." + rootNodesClassArr[3]));
+            $("." + rootNodesClassArr[3]).hide();
+        }
+        function unHideGroupsNodes(treeviewObj) {
+            $("." + rootNodesClassArr[3]).show();
         }
 
         //run after page load
@@ -306,6 +319,18 @@
             $("#" + tableId).on("click", ".file", function () {
                 alert($(this).attr("data-authuri"));
             });
+
+            //change event of 'Select group'
+            $("#selectGroup").on("change", function () {
+                if ($(this).val() !== "") {
+                    //alert($(this).val());
+                    hideGroupsNodes(treeview);
+                }
+                else {
+                    //alert("You select nothing!");
+                    unHideGroupsNodes(treeview);
+                }
+            });
         });
 
         /*--------- clicking 'Load' button - Load data from site, and bind to control---------------------*/
@@ -351,13 +376,6 @@
 
                     $.each(data.d.results, function (index, item) {
                         $selector.append($(String.format(userTemplate, item.Id, item.LoginName, item.Groups.__deferred.uri, item.Title +" - "+item.LoginName.split("\\")[1])));
-                        //item.Title
-                        //item.Id
-                        //item.IsHiddenInUI
-                        //item.LoginName
-                        //item.Email
-                        //item.IsSiteAdmin
-                        //item.Groups.__deferred.uri --> http://isp.emea.festo.net/sites/jstraining/_api/Web/GetUserById(29)/Groups --> used to get all groups which current user exists in
                     });
                     $selector.prepend($(String.format(userTemplate, "", "", "", "")));
                 }
