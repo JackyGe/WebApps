@@ -108,12 +108,12 @@
         var userTemplate = "<option value=\"{0}\" data-loginName=\"{1}\" data-groupsURI=\"{2}\">{3}</option>";
         var groupTemplate = "<option value=\"{0}\" data-usersURI=\"{1}\">{2}</option>";
         var rootTemplate = "<tr class=\"treeview-{0} rootNode\"><td>{1}</td></tr>";
-        var listSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-authURI=\"{3}\" data-uniquePermission={4}>{5}</a></td></tr>";
-        var librarySubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" data-authURI=\"{5}\" data-uniquePermission={6}>{7}</a></td></tr>";
-        var siteSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\"><td><a href=\"#\" data-authURI=\"{4}\">{5}</a></td></tr>";
-        var groupSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-usersURI=\"{3}\" data-groupId=\"{4}\">{5}</a></td></tr>";
-        var folderSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" data-authURI=\"{5}\" data-uniquePermission=\"{6}\">{7}</a></td></tr>";
-        var fileSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" data-authURI=\"{3}\" data-uniquePermission=\"{4}\">{5}</a></td></tr>";
+        var listSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a class=\"list\" href=\"#\" data-authURI=\"{3}\" data-uniquePermission={4}>{5}</a></td></tr>";
+        var librarySubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" class=\"library\" data-authURI=\"{5}\" data-uniquePermission={6}>{7}</a></td></tr>";
+        var siteSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\"><td><a href=\"#\" class=\"site\" data-authURI=\"{4}\">{5}</a></td></tr>";
+        var groupSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" class=\"group\" data-usersURI=\"{3}\" data-groupId=\"{4}\">{5}</a></td></tr>";
+        var folderSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" class=\"folder\" data-authURI=\"{5}\" data-uniquePermission=\"{6}\">{7}</a></td></tr>";
+        var fileSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" class=\"file\" data-authURI=\"{3}\" data-uniquePermission=\"{4}\">{5}</a></td></tr>";
 
         //REST API
         var subSitesURI = "/_api/Web/WebInfos?$orderby=Title desc";
@@ -143,6 +143,100 @@
         var treeview;
 
         /*---------------------------------------generate treeview--------------------------------------------*/
+
+        //initiate nodes, expander, and indent for dynamically added nodes
+        function initNewNode($node) {
+            treeview.initNodes(treeview.getChildNodes($node));
+            treeview.initIndent(treeview.initExpander($node));
+            return $node;
+        }
+
+        //生成动态添加的节点 ** render dynamically added nodes
+        function renderNewNode($node) {
+            //if parent colapsed we hidden
+            if ($.Treeview.prototype.isOneOfParentsCollapsed($node)) {
+                $node.hide();
+            } else {
+                $node.show();
+            }
+            if (!$.Treeview.prototype.isLeaf($node)) {
+                $.Treeview.prototype.renderExpander($node);
+                $.Treeview.prototype.renderWithinExpander($.Treeview.prototype.getChildNodes($node));
+            }
+
+            return $node;
+        }
+
+        //generate all rest uri
+        function generateRESTURI(siteUrl, arrSiteURL) {
+            hostURL = arrSiteURL[0] + "//" + arrSiteURL[2];
+            webURL = siteUrl;
+        }
+
+        //sort a collection of objects by Name property
+        function sortByItemName(originalObjects) {
+            var options = {};
+
+            $.each(originalObjects, function (index, item) {
+                options[item.Name] = item;
+            });
+            //sort() is case sensitive by default
+            var keys = Object.keys(options).sort(function (a, b) {
+                return a.toLowerCase().localeCompare(b.toLowerCase());
+            }).reverse();
+
+            //get the results after sort
+            var sortedObjects = {};
+            $.each(keys, function (i, key) {
+                sortedObjects[i] = options[key];
+            });
+            return sortedObjects;
+        }
+
+        //generate new new nodes in style of tree view
+        function generateNewNodes($currentNode) {
+            //load data of sub nodes when clicking expand icon
+            var currentNodeId = treeview.getNodeId($currentNode);
+            getItemsInOneFolder($currentNode.data("childnodesuri")).done(function (data) {
+                if (data.d) {
+                    //it is necessary to add a condition, or there will be an error because results will be undefined when there is no file or folder,
+                    if (data.d.Files.results.length > 0) {
+                        //sort
+                        var finalResults = sortByItemName(data.d.Files.results);
+
+                        //read data from results and add item to DOM
+                        $.each(finalResults, function (index, item) {
+                            $(String.format(fileSubNodeTemplate, currentNodeId + "-" + (index + 1).toString(), currentNodeId, "leafNode", String.format(filePermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFileURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
+                        });
+                    }
+                    var filesAmount = data.d.Files.results.length;
+
+                    if (data.d.Folders.results.length > 0) {
+                        //sort
+                        var finalResults = sortByItemName(data.d.Folders.results);
+
+                        //read data from results and add item to DOM
+                        $.each(finalResults, function (index, item) {
+                            if (item.Name !== "Forms") {
+                                if (item.ItemCount > 0) {
+                                    $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "folderNode", String.format(itemsInFolder, webURL, item.ServerRelativeUrl), "1", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFolderURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
+                                }
+                                else {
+                                    $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "leafNode", "", "0", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFolderURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
+                                }
+                            }
+                        });
+                    }
+                }
+            }).done(function (data) {
+                renderNewNode(initNewNode($currentNode));
+                $currentNode.attr("data-firstload", "0");
+            })
+            .fail(function (xhr) {
+                failEvent(xhr);
+            });
+        }
+
         //run after page load
         $(function () {
             //create an instance of $.Treeview class
@@ -160,99 +254,6 @@
                 treeview.toggle($currentNode);
             });
 
-            //sort a collection of objects by Name property
-            function sortByItemName(originalObjects) {
-                var options = {};
-
-                $.each(originalObjects, function (index, item) {
-                    options[item.Name] = item;
-                });
-                //sort() is case sensitive by default
-                var keys = Object.keys(options).sort(function (a, b) {
-                    return a.toLowerCase().localeCompare(b.toLowerCase());
-                }).reverse();
-
-                //get the results after sort
-                var sortedObjects = {};
-                $.each(keys, function (i, key) {
-                    sortedObjects[i] = options[key];
-                });
-                return sortedObjects;
-            }
-
-            //generate new new nodes in style of tree view
-            function generateNewNodes($currentNode) {
-                //load data of sub nodes when clicking expand icon
-                var currentNodeId = treeview.getNodeId($currentNode);
-                getItemsInOneFolder($currentNode.data("childnodesuri")).done(function (data) {
-                    if (data.d) {
-                        //it is necessary to add a condition, or there will be an error because results will be undefined when there is no file or folder,
-                        if (data.d.Files.results.length > 0) {
-                            //sort
-                            var finalResults = sortByItemName(data.d.Files.results);
-
-                            //read data from results and add item to DOM
-                            $.each(finalResults, function (index, item) {
-                                $(String.format(fileSubNodeTemplate, currentNodeId + "-" + (index + 1).toString(), currentNodeId, "leafNode", String.format(filePermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFileURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
-                            });
-                        }
-                        var filesAmount = data.d.Files.results.length;
-
-                        if (data.d.Folders.results.length > 0) {
-                            //sort
-                            var finalResults = sortByItemName(data.d.Folders.results);
-
-                            //read data from results and add item to DOM
-                            $.each(finalResults, function (index, item) {
-                                if (item.Name !== "Forms") {
-                                    if (item.ItemCount > 0) {
-                                        $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "folderNode", String.format(itemsInFolder, webURL, item.ServerRelativeUrl), "1", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFolderURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
-                                    }
-                                    else {
-                                        $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "leafNode", "", "0", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFolderURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }).done(function (data) {
-                    renderNewNode(initNewNode($currentNode));
-                    $currentNode.attr("data-firstload", "0");
-                })
-                .fail(function (xhr) {
-                    failEvent(xhr);
-                });
-            }
-
-            //initiate nodes, expander, and indent for dynamically added nodes
-            function initNewNode($node) {
-                treeview.initNodes(treeview.getChildNodes($node));
-                treeview.initIndent(treeview.initExpander($node));
-                return $node;
-            }
-
-            //生成动态添加的节点 ** render dynamically added nodes
-            function renderNewNode($node) {
-                //if parent colapsed we hidden
-                if ($.Treeview.prototype.isOneOfParentsCollapsed($node)) {
-                    $node.hide();
-                } else {
-                    $node.show();
-                }
-                if (!$.Treeview.prototype.isLeaf($node)) {
-                    $.Treeview.prototype.renderExpander($node);
-                    $.Treeview.prototype.renderWithinExpander($.Treeview.prototype.getChildNodes($node));
-                }
-
-                return $node;
-            }
-
-            //generate all rest uri
-            function generateRESTURI(siteUrl, arrSiteURL) {
-                hostURL = arrSiteURL[0] + "//" + arrSiteURL[2];
-                webURL = siteUrl;
-            }
-
             //button click event
             $("#btnLoadSite").on("click", function () {
                 var webAbsoluteUrl = $("#textSiteURL").val().trim(); //_spPageContextInfo.webAbsoluteUrl;
@@ -268,6 +269,10 @@
                         alert("Please input a correct site url!");
                     }
                 }
+            });
+
+            $("#"+tableId).on("click",".site", function () {
+                alert($(this).attr("data-authuri"));
             });
         });
 
@@ -313,7 +318,7 @@
                     $selector.find("option").remove();
 
                     $.each(data.d.results, function (index, item) {
-                        $selector.append($(String.format(userTemplate, item.Id, item.LoginName, item.Groups.__deferred.uri, item.Title)));
+                        $selector.append($(String.format(userTemplate, item.Id, item.LoginName, item.Groups.__deferred.uri, item.Title +" - "+item.LoginName.split("\\")[1])));
                         //item.Title
                         //item.Id
                         //item.IsHiddenInUI
@@ -403,8 +408,7 @@
                         }
                     });
                 }
-            })
-            .fail(function (xhr) {
+            }).fail(function (xhr) {
                 failEvent(xhr);
             });
         }
