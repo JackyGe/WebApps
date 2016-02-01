@@ -118,8 +118,8 @@
         //REST API
         var subSitesURI = "/_api/Web/WebInfos?$orderby=Title desc";
         var listLibURI = "/_api/Web/lists?$filter=Hidden ne true&$expand=RootFolder,HasUniqueRoleAssignments&$select=Title,Id,ParentWebUrl,BaseType,Items,RoleAssignments,ItemCount,RootFolder/ServerRelativeUrl,RootFolder/ItemCount,HasUniqueRoleAssignments&$orderby=Title desc";
-        var siteUsersURI = "/_api/Web/siteusers?$filter=IsHiddenInUI eq false and PrincipalType eq 1";
-        var siteGroupsURI = "/_api/web/roleassignments/groups?$filter=IsHiddenInUI eq false and PrincipalType eq 8";
+        var siteUsersURI = "/_api/Web/siteusers?$filter=IsHiddenInUI eq false and PrincipalType eq 1&$orderby=Title";
+        var siteGroupsURI = "/_api/web/roleassignments/groups?$filter=IsHiddenInUI eq false and PrincipalType eq 8&$orderby=Title desc";
         var sitePermissionsURI = "/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false";
         //get permission of a list/library
         var listPermissionURI = "{0}/_api/Web/Lists(guid'{1}')?$filter=RoleAssignments/Member/IsHiddenInUI eq false&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups";
@@ -237,6 +237,11 @@
             });
         }
 
+        //display security information
+        function showItemSecurity(authURI, userLoginName, groupId) {
+
+        }
+
         //run after page load
         $(function () {
             //create an instance of $.Treeview class
@@ -254,7 +259,7 @@
                 treeview.toggle($currentNode);
             });
 
-            //button click event
+            //click event of 'Load' button
             $("#btnLoadSite").on("click", function () {
                 var webAbsoluteUrl = $("#textSiteURL").val().trim(); //_spPageContextInfo.webAbsoluteUrl;
                 if (webAbsoluteUrl && webAbsoluteUrl.length > 7) {
@@ -271,7 +276,34 @@
                 }
             });
 
+            //click event of site sub node
             $("#"+tableId).on("click",".site", function () {
+                alert($(this).attr("data-authuri"));
+            });
+
+            //click event of library sub node
+            $("#" + tableId).on("click", ".library", function () {
+                alert($(this).attr("data-authuri"));
+            });
+
+            //click event of list sub node
+            $("#" + tableId).on("click", ".list", function () {
+                alert($(this).attr("data-authuri"));
+            });
+
+            //click event of group sub node
+            $("#" + tableId).on("click", ".group", function () {
+                //alert($(this).attr("data-usersURI"));
+                alert($(this).data("usersuri"));
+            });
+
+            //click event of folder node
+            $("#" + tableId).on("click", ".folder", function () {
+                alert($(this).attr("data-authuri"));
+            });
+
+            //click event of file node
+            $("#" + tableId).on("click", ".file", function () {
                 alert($(this).attr("data-authuri"));
             });
         });
@@ -327,6 +359,7 @@
                         //item.IsSiteAdmin
                         //item.Groups.__deferred.uri --> http://isp.emea.festo.net/sites/jstraining/_api/Web/GetUserById(29)/Groups --> used to get all groups which current user exists in
                     });
+                    $selector.prepend($(String.format(userTemplate, "", "", "", "")));
                 }
             })
             .fail(function (xhr) {
@@ -344,12 +377,14 @@
 
                     $.each(data.d.results, function (index, item) {
                         //add options for 'Select Group' selector
-                        $selector.append($(String.format(groupTemplate, item.Id, item.Users.__deferred.uri, item.Title)));
+                        $selector.prepend($(String.format(groupTemplate, item.Id, item.Users.__deferred.uri, item.Title)));
                         //item.Users.__deferred.uri --> http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(7)/Users
 
                         //add subnodes for Groups in Site Structure
                         $(String.format(groupSubNodeTemplate, "4-" + (index + 1).toString(), "4", "leafNode", item.Users.__deferred.uri, item.Id, item.Title)).insertAfter($(".treeview-4"));
                     });
+                    //add one empty option
+                    $selector.prepend($(String.format(groupTemplate, "", "", "")));
                 }
             }).fail(function (xhr) {
                 failEvent(xhr);
