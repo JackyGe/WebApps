@@ -31,6 +31,10 @@
             cursor: pointer;
         }
 
+        #permissionInfo {
+            width:100%;
+        }
+
         #permissionInfo td {
             text-align: center;
         }
@@ -117,7 +121,7 @@
         var rootTemplate = "<tr class=\"treeview-{0} rootNode\"><td>{1}</td></tr>";
         var listSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a class=\"list\" href=\"#\" data-authURI=\"{3}\" data-uniquePermission={4}>{5}</a></td></tr>";
         var librarySubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" class=\"library\" data-authURI=\"{5}\" data-uniquePermission={6}>{7}</a></td></tr>";
-        var siteSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\"><td><a href=\"#\" class=\"site\" data-authURI=\"{4}\">{5}</a></td></tr>";
+        var siteSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\"><td><a href=\"#\" class=\"site\" data-authURI=\"{4}\" data-uniquePermissionURI=\"{5}\">{6}</a></td></tr>";
         var groupSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" class=\"group\" data-usersURI=\"{3}\" data-groupId=\"{4}\">{5}</a></td></tr>";
         var folderSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" class=\"folder\" data-authURI=\"{5}\" data-uniquePermission=\"{6}\">{7}</a></td></tr>";
         var fileSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" class=\"file\" data-authURI=\"{3}\" data-uniquePermission=\"{4}\">{5}</a></td></tr>";
@@ -127,7 +131,7 @@
         var listLibURI = "/_api/Web/lists?$filter=Hidden ne true&$expand=RootFolder,HasUniqueRoleAssignments&$select=Title,Id,ParentWebUrl,BaseType,Items,RoleAssignments,ItemCount,RootFolder/ServerRelativeUrl,RootFolder/ItemCount,HasUniqueRoleAssignments&$orderby=Title desc";
         var siteUsersURI = "/_api/Web/siteusers?$filter=IsHiddenInUI eq false and PrincipalType eq 1&$orderby=Title";
         var siteGroupsURI = "/_api/web/roleassignments/groups?$filter=IsHiddenInUI eq false and PrincipalType eq 8&$orderby=Title desc";
-        var sitePermissionsURI = "/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false";
+        var sitePermissionsURI = "/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false&$orderby=Member/Title";
         //get permission of a list/library
         var listPermissionURI = "{0}/_api/Web/Lists(guid'{1}')?$filter=RoleAssignments/Member/IsHiddenInUI eq false&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups";
 
@@ -136,6 +140,7 @@
         var itemsInFolder = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')?$expand=Folders,Files&$select=Folders/Name,Folders/ServerRelativeUrl,Folders/ItemCount,Files/Name,Files/ServerRelativeUrl"; //{0} -> site url, {1} -> folder server relative url
         var folderPermissionURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";  //{0} -> site url, {1} -> file/folder relative url
         var filePermissionURI = "{0}/_api/Web/GetFileByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";
+        var uniquePermissionOfSiteURI = "{0}/_api/Web/HasUniqueRoleAssignments";
         var uniquePermissionOfListURI = "{0}/_api/Web/Lists(guid'{1}')/HasUniqueRoleAssignments";  // {0} -> site url, {1} -> guid of list/library - Not Used
         var uniquePermissionOfFolderURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields/HasUniqueRoleAssignments"; //{0} -> site url, {1} -> folder relative url
         var uniquePermissionOfFileURI = "{0}/_api/Web/GetFileByServerRelativeUrl('{1}')/ListItemAllFields/HasUniqueRoleAssignments"; //{0} -> site url, {1} -> file relative url
@@ -332,13 +337,12 @@
                     $("#treeview").find("tr[class*='" + rootNodesAsParentClassArr[2] + "']").remove();
                     var parentNodeId = treeview.getNodeId($("." + rootNodesClassArr[2]));
                     $.each(data.d.results, function (index, item) {
-                        $(String.format(siteSubNodeTemplate, parentNodeId + "-" + (index + 1).toString(), parentNodeId, "leafNode", hostURL + item.ServerRelativeUrl + subSitesURI, hostURL + item.ServerRelativeUrl + sitePermissionsURI, item.Title)).insertAfter($(".treeview-" + parentNodeId));
+                        $(String.format(siteSubNodeTemplate, parentNodeId + "-" + (index + 1).toString(), parentNodeId, "leafNode", hostURL + item.ServerRelativeUrl + subSitesURI, hostURL + item.ServerRelativeUrl + sitePermissionsURI, String.format(uniquePermissionOfSiteURI, hostURL+item.ServerRelativeUrl), item.Title)).insertAfter($(".treeview-" + parentNodeId));
                     });
                 }
-            })
-                    .fail(function (xhr) {
-                        failEvent(xhr);
-                    });
+            }).fail(function (xhr) {
+                failEvent(xhr);
+            });
         }
 
         //load lists and libraries
@@ -409,17 +413,28 @@
             }
         }
 
-        //display security information of list, library, site, folder or file
-        function showSiteItemSecurity(authURI, userLoginName, groupId) {
+        //display security information of list, library, site, folder or file  -- to be added: user filter & group filter
+        function showSiteItemSecurity(authURI, uniquepermissionURI, siteTitle) {
+            checkUniqueRoleAssignment(uniquepermissionURI).done(function(data){
+                if (data.d) {
+                    if (data.d.HasUniqueRoleAssignments) {
+                        $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left'>" + siteTitle + " does not inherit permissions.</td></tr>");
+                    }
+                    else {
+                        $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left'>" + siteTitle + " inherits permissions.</td></tr>");
+                    }
+                    //true or false
+                }
+            });
+
             getSitePermissions(authURI).done(function (data) {
                 if (data.d.results) {
                     $.each(data.d.results, function (index, item) {
+                        //get the least order number which means the largest permission
                         var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function(a,b){return a.Order - b.Order;});
 
                         $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
-
-                    //item.Member.Title
-                    //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                        //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
                     });
                 }
             }).fail(function (xhr) {
@@ -593,40 +608,17 @@
             });
         }
 
-        //check whether a list or library has unique permission - Not Used
-        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957f1e6-a35a-4888-a770-d5325c5cfe74')/HasUniqueRoleAssignments
-        function checkUniqueRoleAssignmentForList(restURI) {
-            $.ajax({
-                url: restURI,
-                type: "GET",
-                headers: { "Accept": "application/json;odata=verbose" },
-                success: function (data) {
-                    if (data.d) {
-                        //data.d.HasUniqueRoleAssignments --> true or false
-                    }
-                },
-                error: function (xhr) {
-                    alert(xhr.status + ': ' + xhr.statusText);
-                }
-            });
-        }
-
-        //check whehter a file or folder has unique permissions
-        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents/Folder1')/ListItemAllFields/HasUniqueRoleAssignments
-        function checkUniqueRoleAssignmentForItem(restURI) {
-            $.ajax({
-                url: restURI,
-                type: "GET",
-                headers: { "Accept": "application/json;odata=verbose" },
-                success: function (data) {
-                    if (data.d) {
-                        //data.d.HasUniqueRoleAssignments --> true or false
-                    }
-                },
-                error: function (xhr) {
-                    alert(xhr.status + ': ' + xhr.statusText);
-                }
-            });
+        //check whether an object has unique permission
+        //site: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/HasUniqueRoleAssignments
+        //list/library: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957f1e6-a35a-4888-a770-d5325c5cfe74')/HasUniqueRoleAssignments
+        //folder: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFolderByServerRelativeUrl('/sites/cn0jacky/Documents/Folder1')/ListItemAllFields/HasUniqueRoleAssignments
+        ////http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFileByServerRelativeUrl('/sites/cn0jacky/Documents/TEST.txt')/ListItemAllFields/HasUniqueRoleAssignments
+        function checkUniqueRoleAssignment(restURI) {
+            return $.ajax({
+                        url: restURI,
+                        type: "GET",
+                        headers: { "Accept": "application/json;odata=verbose" }
+                    });
         }
 
         //check whether current user is site collection administrator
@@ -678,7 +670,7 @@
             $("#" + treeviewTableId).on("click", ".site", function () {
                 clearPermissionsDiv();
                 //alert($(this).attr("data-authuri"));
-                showSiteItemSecurity($(this).attr("data-authuri"),"","");
+                showSiteItemSecurity($(this).attr("data-authuri"), $(this).data("uniquepermissionuri"), $(this).text());
             });
 
             //click event of library sub node
