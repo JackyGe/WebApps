@@ -410,8 +410,21 @@
         }
 
         //display security information of list, library, site, folder or file
-        function showItemSecurity(authURI, userLoginName, groupId) {
+        function showSiteItemSecurity(authURI, userLoginName, groupId) {
+            getSitePermissions(authURI).done(function (data) {
+                if (data.d.results) {
+                    $.each(data.d.results, function (index, item) {
+                        var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function(a,b){return a.Order - b.Order;});
 
+                        $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+
+                    //item.Member.Title
+                    //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                    });
+                }
+            }).fail(function (xhr) {
+                failEvent(xhr);
+            });
         }
 
         //show users in a certain group
@@ -419,7 +432,14 @@
             getUsersInOneGroup(usersURI).done(function (data) {
                 if (data.d.results && data.d.results.length > 0) {
                     $.each(data.d.results, function (index, item) {
-                        $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-3\">" + item.Title + "</td><td class=\"col-sm-3\">" + item.LoginName.split("\\")[1] + "</td><td class=\"col-sm-6\">" + item.Email + "</td></tr>");
+                        if (item.PrincipalType === 1) {
+                            $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-5\">" + item.Title + "</td><td class=\"col-sm-2\">" + item.LoginName.split("\\")[1] + "</td><td class=\"col-sm-5\">" + item.Email + "</td></tr>");
+                        }
+                        else if (item.PrincipalType === 4) {
+                            //domain group
+                            $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-5\">" + item.Title + "</td><td class=\"col-sm-2\"></td><td class=\"col-sm-5\"></td></tr>");
+                        }
+                        
                     });
                 }
                 else {
@@ -512,25 +532,14 @@
         }
 
         //get site permissions
-        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member
+        //http://isp.emea.festo.net/sites/jstraining/cn0pengw/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false
         // PrincipalType = 8 means it is a group, if PrincipalType equals to 1, it is a user
         function getSitePermissions(restURI) {
-            $.ajax({
-                url: restURI,
-                type: "GET",
-                headers: { "Accept": "application/json;odata=verbose" },
-                success: function (data) {
-                    if (data.d.results) {
-                        $.each(data.d.results, function (index, item) {
-                            //item.Member.Title
-                            //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
-                        });
-                    }
-                },
-                error: function (xhr) {
-                    alert(xhr.status + ': ' + xhr.statusText);
-                }
-            });
+            return $.ajax({
+                        url: restURI,
+                        type: "GET",
+                        headers: { "Accept": "application/json;odata=verbose" }
+                    });
         }
 
         //get permissions of a list or library
@@ -631,7 +640,7 @@
             });
         }
 
-        /*----------------------------------------------------page load event--------------------------------------------------------*/
+        /*----------------------------------------------------page load--------------------------------------------------------*/
         $(function () {
             //create an instance of $.Treeview class
             treeview = new $.Treeview($("#" + treeviewTableId));
@@ -669,6 +678,7 @@
             $("#" + treeviewTableId).on("click", ".site", function () {
                 clearPermissionsDiv();
                 //alert($(this).attr("data-authuri"));
+                showSiteItemSecurity($(this).attr("data-authuri"),"","");
             });
 
             //click event of library sub node
