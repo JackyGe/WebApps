@@ -123,8 +123,8 @@
         var librarySubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" class=\"library\" data-authURI=\"{5}\" data-uniquePermission={6}>{7}</a></td></tr>";
         var siteSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\"><td><a href=\"#\" class=\"site\" data-authURI=\"{4}\" data-uniquePermissionURI=\"{5}\">{6}</a></td></tr>";
         var groupSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" class=\"group\" data-usersURI=\"{3}\" data-groupId=\"{4}\">{5}</a></td></tr>";
-        var folderSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" class=\"folder\" data-authURI=\"{5}\" data-uniquePermission=\"{6}\">{7}</a></td></tr>";
-        var fileSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" class=\"file\" data-authURI=\"{3}\" data-uniquePermission=\"{4}\">{5}</a></td></tr>";
+        var folderSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\" data-childNodesURI=\"{3}\" data-firstLoad={4}><td><a href=\"#\" class=\"folder\" data-authURI=\"{5}\">{6}</a></td></tr>";
+        var fileSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a href=\"#\" class=\"file\" data-authURI=\"{3}\">{4}</a></td></tr>";
 
         //REST API
         var subSitesURI = "/_api/Web/WebInfos?$orderby=Title desc";
@@ -133,13 +133,13 @@
         var siteGroupsURI = "/_api/web/roleassignments/groups?$filter=IsHiddenInUI eq false and PrincipalType eq 8&$orderby=Title desc";
         var sitePermissionsURI = "/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false&$orderby=Member/Title";
         //get permission of a list/library
-        var listPermissionURI = "{0}/_api/Web/Lists(guid'{1}')?$filter=RoleAssignments/Member/IsHiddenInUI eq false&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups";
+        var listPermissionURI = "{0}/_api/Web/Lists(guid'{1}')?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups,HasUniqueRoleAssignments&$filter=RoleAssignments/Member/IsHiddenInUI eq false&$orderby=RoleAssignments/Member/Title desc"; // filter doesn't work, orderby doesn't work
 
         var usersInGroupURI = "{0}/_api/Web/SiteGroups/GetById({1})/Users?$orderby=Title"; //{0} -> site url, {1} -> group ID
         var itemsInListOrLibURI = "{0}/_api/Web/Lists(guid'{1}')/Items"; //{0} -> site url, {1} -> guid of list/lib
         var itemsInFolder = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')?$expand=Folders,Files&$select=Folders/Name,Folders/ServerRelativeUrl,Folders/ItemCount,Files/Name,Files/ServerRelativeUrl"; //{0} -> site url, {1} -> folder server relative url
-        var folderPermissionURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";  //{0} -> site url, {1} -> file/folder relative url
-        var filePermissionURI = "{0}/_api/Web/GetFileByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order";
+        var folderPermissionURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,HasUniqueRoleAssignments";  //{0} -> site url, {1} -> file/folder relative url
+        var filePermissionURI = "{0}/_api/Web/GetFileByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,HasUniqueRoleAssignments";
         var uniquePermissionOfSiteURI = "{0}/_api/Web/HasUniqueRoleAssignments";
         var uniquePermissionOfListURI = "{0}/_api/Web/Lists(guid'{1}')/HasUniqueRoleAssignments";  // {0} -> site url, {1} -> guid of list/library - Not Used
         var uniquePermissionOfFolderURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields/HasUniqueRoleAssignments"; //{0} -> site url, {1} -> folder relative url
@@ -217,7 +217,7 @@
                         var finalResults = sortByItemName(data.d.Files.results);
                         //read data from results and add item to DOM
                         $.each(finalResults, function (index, item) {
-                            $(String.format(fileSubNodeTemplate, currentNodeId + "-" + (index + 1).toString(), currentNodeId, "leafNode", String.format(filePermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFileURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
+                            $(String.format(fileSubNodeTemplate, currentNodeId + "-" + (index + 1).toString(), currentNodeId, "leafNode", String.format(filePermissionURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
                         });
                     }
                     var filesAmount = data.d.Files.results.length;
@@ -228,10 +228,10 @@
                         $.each(finalResults, function (index, item) {
                             if (item.Name !== "Forms") {
                                 if (item.ItemCount > 0) {
-                                    $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "folderNode", String.format(itemsInFolder, webURL, item.ServerRelativeUrl), "1", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFolderURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
+                                    $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "folderNode", String.format(itemsInFolder, webURL, item.ServerRelativeUrl), "1", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
                                 }
                                 else {
-                                    $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "leafNode", "", "0", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), String.format(uniquePermissionOfFolderURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
+                                    $(String.format(folderSubNodeTemplate, currentNodeId + "-" + (filesAmount + index + 1).toString(), currentNodeId, "leafNode", "", "0", String.format(folderPermissionURI, webURL, item.ServerRelativeUrl), item.Name)).insertAfter($currentNode);
                                 }
                             }
                         });
@@ -413,20 +413,50 @@
             }
         }
 
-        //display security information of list, library, site, folder or file  -- to be added: user filter & group filter
+        //display security information of a list and library
+        function showListItemSecurity(authURI, uniquePermission, listTitle) {
+            if (uniquePermission) {
+                //alert(uniquePermission);
+                $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left;padding-bottom: 20px;'>" + listTitle + " does not inherit permissions.</td></tr>");
+            }
+            else {
+                //alert("FALSE!!!!");
+                $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left;padding-bottom: 20px;'>" + listTitle + " inherits permissions.</td></tr>");
+            }
+
+            getListPermissions(authURI).done(function (data) {
+                //data.d.Title
+                //data.d.Id -> GUID
+
+                if (data.d && data.d.RoleAssignments.results && data.d.RoleAssignments.results.length > 0) {
+                    var listRoleAssignments = data.d && data.d.RoleAssignments.results;
+                    $.each(listRoleAssignments, function (index, item) {
+                        //get a sorted permission array, the first item is the largest permission level
+                        var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
+
+                        $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                    });
+                }
+            }).fail(function (xhr) {
+                failEvent(xhr);
+            });
+        }
+
+        //display security information of a site  -- to be added: user filter & group filter
         function showSiteItemSecurity(authURI, uniquepermissionURI, siteTitle) {
+            //check whether current site has unique permision or not
             checkUniqueRoleAssignment(uniquepermissionURI).done(function(data){
                 if (data.d) {
                     if (data.d.HasUniqueRoleAssignments) {
-                        $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left'>" + siteTitle + " does not inherit permissions.</td></tr>");
+                        $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left;padding-bottom: 20px;'>" + siteTitle + " does not inherit permissions.</td></tr>");
                     }
                     else {
-                        $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left'>" + siteTitle + " inherits permissions.</td></tr>");
+                        $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left;padding-bottom: 20px;'>" + siteTitle + " inherits permissions.</td></tr>");
                     }
-                    //true or false
                 }
             });
 
+            //get site permission information
             getSitePermissions(authURI).done(function (data) {
                 if (data.d.results) {
                     $.each(data.d.results, function (index, item) {
@@ -560,19 +590,11 @@
         //get permissions of a list or library
         //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'7af0f479-2f5a-4f6b-83f9-722afc05c595')?$filter=Hidden ne true and RoleAssignments/Member/IsHiddenInUI eq true&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings,HasUniqueRoleAssignments&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups,HasUniqueRoleAssignments
         function getListPermissions(restURI) {
-            $.ajax({
-                url: restURI,
-                type: "GET",
-                headers: { "Accept": "application/json;odata=verbose" },
-                success: function (data) {
-                    if (data.d) {
-
-                    }
-                },
-                error: function (xhr) {
-                    alert(xhr.status + ': ' + xhr.statusText);
-                }
-            });
+            return $.ajax({
+                        url: restURI,
+                        type: "GET",
+                        headers: { "Accept": "application/json;odata=verbose" }
+                    });
         }
 
         //get permissions of a file or folder, can't be used for a library
@@ -677,12 +699,14 @@
             $("#" + treeviewTableId).on("click", ".library", function () {
                 clearPermissionsDiv();
                 //alert($(this).attr("data-authuri"));
+                showListItemSecurity($(this).data("authuri"), $(this).data("uniquepermission"), $(this).text());
             });
 
             //click event of list sub node
             $("#" + treeviewTableId).on("click", ".list", function () {
                 clearPermissionsDiv();
                 //alert($(this).attr("data-authuri"));
+                showListItemSecurity($(this).data("authuri"), $(this).data("uniquepermission"), $(this).text());
             });
 
             //click event of folder node
