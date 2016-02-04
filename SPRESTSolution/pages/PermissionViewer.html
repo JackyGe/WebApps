@@ -175,7 +175,6 @@
                 $.Treeview.prototype.renderExpander($node);
                 $.Treeview.prototype.renderWithinExpander($.Treeview.prototype.getChildNodes($node));
             }
-
             return $node;
         }
 
@@ -253,6 +252,7 @@
             var isAdmin = false;
             clearExistingData();
 
+            //check  whether current user is a site admin and then load nodes data
             checkSiteAdmin(currentUserRestUrl).done(function (data) {
                 if (data.d) {
                     isAdmin = data.d.IsSiteAdmin; // true or false
@@ -447,6 +447,7 @@
                 $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left;padding-bottom: 20px;'>" + listTitle + " inherits permissions.</td></tr>");
             }
 
+            //get permission information of a list or library
             getListPermissions(authURI).done(function (data) {
                 if (data.d && data.d.RoleAssignments.results && data.d.RoleAssignments.results.length > 0) {
                     var listRoleAssignments = data.d.RoleAssignments.results;
@@ -566,7 +567,7 @@
                     });
         }
 
-        //get all items inside a list or library: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957F1E6-A35A-4888-A770-D5325C5CFE74')/Items
+        //get all items inside a list or library: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957F1E6-A35A-4888-A770-D5325C5CFE74')/Items  -- Not Used
         function getItemsInOneList(restURI) {
             $.ajax({
                 url: restURI,
@@ -608,7 +609,7 @@
         }
 
         //get permissions of a list or library
-        //http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'7af0f479-2f5a-4f6b-83f9-722afc05c595')?$filter=Hidden ne true and RoleAssignments/Member/IsHiddenInUI eq true&$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings,HasUniqueRoleAssignments&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups,HasUniqueRoleAssignments
+        //http://isp.emea.festo.net/sites/jstraining//_api/Web/Lists(guid'aa9e7b0f-c2c2-44b0-a683-3721eaaf220a')?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups,HasUniqueRoleAssignments&$filter=RoleAssignments/Member/IsHiddenInUI eq false&$orderby=RoleAssignments/Member/Title desc
         function getListPermissions(restURI) {
             return $.ajax({
                         url: restURI,
@@ -659,7 +660,6 @@
             //add click event for expander
             $("#" + treeviewTableId).on("click", ".treeview-expander", function () {
                 var $currentNode = $(this).closest("tr");
-
                 if (!$currentNode.hasClass("rootNode") && $currentNode.hasClass("treeview-collapsed") && $currentNode.attr("data-firstload") === "1") {
                     //load data of child nodes
                     generateNewNodes($currentNode);
@@ -688,42 +688,36 @@
             //click event of site sub node
             $("#" + treeviewTableId).on("click", ".site", function () {
                 clearPermissionsDiv();
-                //alert($(this).attr("data-authuri"));
                 showSiteItemSecurity($(this).attr("data-authuri"), $(this).data("uniquepermissionuri"), $(this).text());
             });
 
             //click event of library sub node
             $("#" + treeviewTableId).on("click", ".library", function () {
                 clearPermissionsDiv();
-                //alert($(this).attr("data-authuri"));
                 showListItemSecurity($(this).data("authuri"), $(this).data("uniquepermission"), $(this).text());
             });
 
             //click event of list sub node
             $("#" + treeviewTableId).on("click", ".list", function () {
                 clearPermissionsDiv();
-                //alert($(this).attr("data-authuri"));
                 showListItemSecurity($(this).data("authuri"), $(this).data("uniquepermission"), $(this).text());
             });
 
             //click event of folder node
             $("#" + treeviewTableId).on("click", ".folder", function () {
                 clearPermissionsDiv();
-                //alert($(this).attr("data-authuri"));
                 showLibItemSecurity($(this).data("authuri"), $(this).text());
             });
 
             //click event of file node
             $("#" + treeviewTableId).on("click", ".file", function () {
                 clearPermissionsDiv();
-                //alert($(this).attr("data-authuri"));
                 showLibItemSecurity($(this).data("authuri"), $(this).text());
             });
 
             //click event of group sub node
             $("#" + treeviewTableId).on("click", ".group", function () {
                 clearPermissionsDiv();
-                //alert($(this).data("usersuri"));
                 showUsersOfGroup($(this).data("usersuri"));
             });
 
