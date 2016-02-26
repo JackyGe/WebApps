@@ -136,6 +136,7 @@
         var listPermissionURI = "{0}/_api/Web/Lists(guid'{1}')?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups,HasUniqueRoleAssignments&$filter=RoleAssignments/Member/IsHiddenInUI eq false&$orderby=RoleAssignments/Member/Title desc"; // filter doesn't work, orderby doesn't work
 
         var usersInGroupURI = "{0}/_api/Web/SiteGroups/GetById({1})/Users?$orderby=Title"; //{0} -> site url, {1} -> group ID
+        var groupsOfUserURI = "{0}/_api/Web/GetUserById({1})/groups?$select=Id,Title,PrincipalType&$filter=IsHiddenInUI eq false&$orderby=Title"; //{0} -> web absolute url, {1} -> user id
         var itemsInListOrLibURI = "{0}/_api/Web/Lists(guid'{1}')/Items"; //{0} -> site url, {1} -> guid of list/lib
         var itemsInFolder = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')?$expand=Folders,Files&$select=Folders/Name,Folders/ServerRelativeUrl,Folders/ItemCount,Files/Name,Files/ServerRelativeUrl"; //{0} -> site url, {1} -> folder server relative url
         var folderPermissionURI = "{0}/_api/Web/GetFolderByServerRelativeUrl('{1}')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,HasUniqueRoleAssignments";  //{0} -> site url, {1} -> file/folder relative url
@@ -378,6 +379,23 @@
             });
         }
 
+        //clear 'Select user' dropdown menu
+        function clearSelectedGroup() {
+            if ($('#selectGroup').val() !== "") {
+                $('#selectGroup option:first-child').attr("selected", "selected");
+                $('#selectGroup').val("");
+                $("#selectGroup").trigger("change");
+            }
+        }
+
+        //clear 'Select group' dropdown menu
+        function clearSelectedUser() {
+            if ($('#selectUser').val() !== "") {
+                $('#selectUser option:first-child').attr("selected", "selected");
+                $('#selectUser').val("");
+            }
+        }
+
         //clear permissions info div when you clicking any item
         function clearPermissionsDiv() {
             $("#" + permissionTableId).find("tr").remove();
@@ -479,18 +497,87 @@
 
             //get site permission information
             getSitePermissions(authURI).done(function (data) {
-                if (data.d.results) {
-                    $.each(data.d.results, function (index, item) {
-                        //get the least order number which means the largest permission
-                        var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function(a,b){return a.Order - b.Order;});
+                if (data.d.results && data.d.results.length > 0) {
+                    //store all permission info to a variable
+                    var siteRoleAssignments = data.d.results;
 
-                        $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
-                        //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
-                    });
+                    //Case 1 : when selecting user   --> to be done
+                    if ($("#selectUser").val() !== "") {
+                        var isExisted;
+                        var targetUserId = $("#selectUser").val().trim();
+                        //a variable to store id of all groups of a user 
+                        var groupsArr = [];
+
+                        //get all the groups where selected user exists
+                        getGroupsFromUser(targetUserId).done(function (data) {
+                            if (data.d && data.d.results.length > 0) {
+                                $.each(data.d.results, function (index, item) {
+                                    groupsArr.push(item.Id);
+                                });
+                            }
+                            //alert(groupsArr.toString());
+                            //get all the permissions info and filter them
+                            $.each(siteRoleAssignments, function (index, item) {
+                                isExisted = false;
+
+                                if (item.Member.PrincipalType != 8) {
+                                    if (targetUserId == item.Member.Id) {
+                                        isExisted = true;
+                                    }
+                                }
+                                else {
+                                    if (groupsArr.indexOf(item.Member.Id) > -1) {
+                                        isExisted = true;
+                                    }
+                                }
+
+                                if (isExisted){
+                                    //get the least order number which means the largest permission
+                                    var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
+
+                                    $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                                    //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                                }
+                            });
+                        });
+                    }
+                    else if ($("#selectGroup").val() !== "") {//case 2: when selecting group
+                        $.each(siteRoleAssignments, function (index, item) {
+                            //get the least order number which means the largest permission
+                            var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
+
+                            //check whether a group have permission on a site
+                            if (item.Member.PrincipalType == 8 && $("#selectGroup").val() == item.Member.Id) {
+                                $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                                //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                            }
+                        });
+                    }
+                    else {//case 3: neither of user and group are selected
+                        $.each(siteRoleAssignments, function (index, item) {
+                            //get the least order number which means the largest permission
+                            var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
+
+                            $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                            //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                        });
+                    }
                 }
             }).fail(function (xhr) {
                 failEvent(xhr);
             });
+        }
+
+        //check user permission on site
+        function checkUserPermissionOnSite(targetUserId, currentRoleAssignmentId, currentPrincipalType) {
+            //get user by id -> http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/GetUserById(8)
+            //get groups of a user -> http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/GetUserById(8)/groups
+
+            //get group by id -> http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/sitegroups(55)
+            //get users in a group -> http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(55)/Users
+
+            
+            
         }
 
         //show users in a certain group
@@ -505,7 +592,6 @@
                             //domain group
                             $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-5\">" + item.Title + "</td><td class=\"col-sm-2\"></td><td class=\"col-sm-5\"></td></tr>");
                         }
-                        
                     });
                 }
                 else {
@@ -567,6 +653,17 @@
                     });
         }
 
+        //get groups where a user exists in
+        function getGroupsFromUser(userId) {
+            //get groups of a user
+            var restURL = String.format(groupsOfUserURI, webURL, userId);
+            return $.ajax({
+                        url: restURL,
+                        type: "GET",
+                        headers: { "Accept": "application/json;odata=verbose" }
+                    });
+        }
+
         //get all items inside a list or library: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957F1E6-A35A-4888-A770-D5325C5CFE74')/Items  -- Not Used
         function getItemsInOneList(restURI) {
             $.ajax({
@@ -599,7 +696,7 @@
 
         //get site permissions
         //http://isp.emea.festo.net/sites/jstraining/cn0pengw/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false
-        // PrincipalType = 8 means it is a group, if PrincipalType equals to 1, it is a user
+        // PrincipalType = 8 means it is a group, if PrincipalType equals to 1, it is a user;  PrincipalType equals to 4 means domain group
         function getSitePermissions(restURI) {
             return $.ajax({
                         url: restURI,
@@ -725,6 +822,7 @@
             $("#selectGroup").on("change", function () {
                 if ($(this).val() !== "") {
                     hideGroupsNodes(treeview);
+                    clearSelectedUser();
                 }
                 else {
                     unHideGroupsNodes(treeview);
@@ -735,6 +833,9 @@
             //change event of 'Select group'
             $("#selectUser").on("change", function () {
                 clearPermissionsDiv();
+                if ($(this).val() !== "") {
+                    clearSelectedGroup();
+                }
             });
         });
     </script>
