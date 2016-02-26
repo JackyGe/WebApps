@@ -154,6 +154,7 @@
         var rootNodesAsParentClassArr = ["treeview-parent-1", "treeview-parent-2", "treeview-parent-3", "treeview-parent-4"];
         var hostURL, webURL; //web absolute url
         var treeview;
+        var groupIdArr = [];
 
         /*---------------------------------------generate treeview--------------------------------------------*/
 
@@ -670,9 +671,12 @@
             });
         }
 
-        function getGroupsFromUser(userId, groupIdArr) {
+        //get id of all groups of one user
+        //param: user id
+        function getGroupsFromUser(userId) {
             return getGroupsFromUser(userId).done(function (data) {
                 if (data.d && data.d.results.length > 0) {
+                    groupIdArr.length = 0
                     $.each(data.d.results, function (index, item) {
                         groupIdArr.push(item.Id);
                     });
