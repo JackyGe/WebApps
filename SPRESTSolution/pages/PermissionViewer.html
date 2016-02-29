@@ -6,25 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/SPRESTSolution/bootstrap-3.3.6/css/bootstrap.min.css">
     <style>
-        #treeSiteStructure,#permissionArea{
-             height:400px;
-             border: 1px solid #ddd;
-             overflow:auto;
-             border-top-left-radius:4px;
-             border-top-right-radius:4px;
-             border-bottom-left-radius:4px;
-             border-bottom-right-radius:4px;
+        #treeSiteStructure, #permissionArea {
+            height: 400px;
+            border: 1px solid #ddd;
+            overflow: auto;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
         }
 
         .treeview-indent {
-            width:16px;
+            width: 16px;
             height: 16px;
             display: inline-block;
             position: relative;
         }
 
         .treeview-expander {
-            width:16px;
+            width: 16px;
             height: 16px;
             display: inline-block;
             position: relative;
@@ -32,12 +32,12 @@
         }
 
         #permissionInfo {
-            width:100%;
+            width: 100%;
         }
 
-        #permissionInfo td {
-            text-align: center;
-        }
+            #permissionInfo td {
+                text-align: center;
+            }
     </style>
 </head>
 <body>
@@ -74,17 +74,13 @@
             <div id="divSiteStructure" class="col-sm-6">
                 <label style="font-size:21px">Site Structure:</label>
                 <div id="treeSiteStructure">
-                        <table class="tree" id="treeview">
-
-                        </table>
+                    <table class="tree" id="treeview"></table>
                 </div>
             </div>
             <div id="divPermissions" class="col-sm-6">
                 <label style="font-size:21px">Permissions:</label>
                 <div id="permissionArea">
-                    <table class="permissions" id="permissionInfo">
-
-                    </table>
+                    <table class="permissions" id="permissionInfo"></table>
                 </div>
             </div>
         </div>
@@ -155,6 +151,8 @@
         var hostURL, webURL; //web absolute url
         var treeview;
         var groupIdArr = [];
+        var isExisted;
+        var targetUserId;
 
         /*---------------------------------------generate treeview--------------------------------------------*/
 
@@ -290,7 +288,7 @@
                     $selector.find("option").remove();
 
                     $.each(data.d.results, function (index, item) {
-                        $selector.append($(String.format(userTemplate, item.Id, item.LoginName, item.Groups.__deferred.uri, item.Title +" - "+item.LoginName.split("\\")[1])));
+                        $selector.append($(String.format(userTemplate, item.Id, item.LoginName, item.Groups.__deferred.uri, item.Title + " - " + item.LoginName.split("\\")[1])));
                     });
                     $selector.prepend($(String.format(userTemplate, "", "", "", "")));
                 }
@@ -339,7 +337,7 @@
                     $("#treeview").find("tr[class*='" + rootNodesAsParentClassArr[2] + "']").remove();
                     var parentNodeId = treeview.getNodeId($("." + rootNodesClassArr[2]));
                     $.each(data.d.results, function (index, item) {
-                        $(String.format(siteSubNodeTemplate, parentNodeId + "-" + (index + 1).toString(), parentNodeId, "leafNode", hostURL + item.ServerRelativeUrl + subSitesURI, hostURL + item.ServerRelativeUrl + sitePermissionsURI, String.format(uniquePermissionOfSiteURI, hostURL+item.ServerRelativeUrl), item.Title)).insertAfter($(".treeview-" + parentNodeId));
+                        $(String.format(siteSubNodeTemplate, parentNodeId + "-" + (index + 1).toString(), parentNodeId, "leafNode", hostURL + item.ServerRelativeUrl + subSitesURI, hostURL + item.ServerRelativeUrl + sitePermissionsURI, String.format(uniquePermissionOfSiteURI, hostURL + item.ServerRelativeUrl), item.Title)).insertAfter($(".treeview-" + parentNodeId));
                     });
                 }
             }).fail(function (xhr) {
@@ -447,38 +445,14 @@
                     var itemRoleAssignments = data.d.RoleAssignments.results;
                     //case 1: when selecting user
                     if ($("#selectUser").val() !== "") {
-                        var isExisted;
-                        var targetUserId = $("#selectUser").val().trim();
-                        //a variable to store id of all groups of a user 
-                        var groupsArr = [];
+                        targetUserId = $("#selectUser").val().trim();
 
-                        //get all the groups where selected user exists
-                        getGroupsFromUser(targetUserId).done(function (data) {
-                            if (data.d && data.d.results.length > 0) {
-                                $.each(data.d.results, function (index, item) {
-                                    groupsArr.push(item.Id);
-                                });
-                            }
-
+                        $.when(getGroupsFromUserId(targetUserId)).done(function () {
                             $.each(itemRoleAssignments, function (index, item) {
-                                isExisted = false;
-
-                                if (item.Member.PrincipalType != 8) {
-                                    if (targetUserId == item.Member.Id) {
-                                        isExisted = true;
-                                    }
-                                }
-                                else {
-                                    if (groupsArr.indexOf(item.Member.Id) > -1) {
-                                        isExisted = true;
-                                    }
-                                }
-
-                                if (isExisted) {
+                                if (HasPermissionOrNot(targetUserId, item.Member.Id, item.Member.PrincipalType)) {
                                     //get a sorted permission array, the first item is the largest permission level
                                     var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                                    $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                                 }
                             });
                         });
@@ -488,17 +462,15 @@
                             if (item.Member.PrincipalType == 8 && $("#selectGroup").val() == item.Member.Id) {
                                 //get a sorted permission array, the first item is the largest permission level
                                 var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                                $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                             }
                         });
                     }
-                    else{
+                    else {
                         $.each(itemRoleAssignments, function (index, item) {
                             //get a sorted permission array, the first item is the largest permission level
                             var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                            $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                         });
                     }
                 }
@@ -509,6 +481,7 @@
 
         //display security information of a list or library
         function showListItemSecurity(authURI, uniquePermission, listTitle) {
+            //display permission inheritance information
             if (uniquePermission) {
                 $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left;padding-bottom: 20px;'>" + listTitle + " does not inherit permissions.</td></tr>");
             }
@@ -520,41 +493,18 @@
             getListPermissions(authURI).done(function (data) {
                 if (data.d && data.d.RoleAssignments.results && data.d.RoleAssignments.results.length > 0) {
                     var listRoleAssignments = data.d.RoleAssignments.results;
+                    var roleDefinitionBindings;
 
                     //case 1: when selecting user
                     if ($("#selectUser").val() !== "") {
-                        var isExisted;
-                        var targetUserId = $("#selectUser").val().trim();
-                        //a variable to store id of all groups of a user 
-                        var groupsArr = [];
+                        targetUserId = $("#selectUser").val().trim();
 
-                        //get all the groups where selected user exists
-                        getGroupsFromUser(targetUserId).done(function (data) {
-                            if (data.d && data.d.results.length > 0) {
-                                $.each(data.d.results, function (index, item) {
-                                    groupsArr.push(item.Id);
-                                });
-                            }
-
+                        $.when(getGroupsFromUserId(targetUserId)).done(function () {
                             $.each(listRoleAssignments, function (index, item) {
-                                isExisted = false;
-
-                                if (item.Member.PrincipalType != 8) {
-                                    if (targetUserId == item.Member.Id) {
-                                        isExisted = true;
-                                    }
-                                }
-                                else {
-                                    if (groupsArr.indexOf(item.Member.Id) > -1) {
-                                        isExisted = true;
-                                    }
-                                }
-
-                                if (isExisted) {
+                                if (HasPermissionOrNot(targetUserId, item.Member.Id, item.Member.PrincipalType)) {
                                     //get a sorted permission array, the first item is the largest permission level
-                                    var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                                    $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                                    roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
+                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                                 }
                             });
                         });
@@ -562,20 +512,17 @@
                     else if ($("#selectGroup").val() !== "") {//case 2: when selecting group
                         $.each(listRoleAssignments, function (index, item) {
                             if (item.Member.PrincipalType == 8 && $("#selectGroup").val() == item.Member.Id) {
-
                                 //get a sorted permission array, the first item is the largest permission level
-                                var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                                $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                                roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
+                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                             }
                         });
                     }
                     else {
                         $.each(listRoleAssignments, function (index, item) {
                             //get a sorted permission array, the first item is the largest permission level
-                            var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                            $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                            roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
+                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                         });
                     }
                 }
@@ -586,8 +533,8 @@
 
         //display security information of a site  -- to be added: user filter & group filter
         function showSiteItemSecurity(authURI, uniquepermissionURI, siteTitle) {
-            //check whether current site has unique permision or not
-            checkUniqueRoleAssignment(uniquepermissionURI).done(function(data){
+            //check whether current site has unique permision or not, and display permission inheritance information
+            checkUniqueRoleAssignment(uniquepermissionURI).done(function (data) {
                 if (data.d) {
                     if (data.d.HasUniqueRoleAssignments) {
                         $("#" + permissionTableId).prepend("<tr class='row'><td colspan='2' style='text-align:left;padding-bottom: 20px;'>" + siteTitle + " does not inherit permissions.</td></tr>");
@@ -603,43 +550,20 @@
                 if (data.d.results && data.d.results.length > 0) {
                     //store all permission info to a variable
                     var siteRoleAssignments = data.d.results;
+                    var roleDefinitionBindings;
 
                     //Case 1 : when selecting user   --> to be done
                     if ($("#selectUser").val() !== "") {
-                        var isExisted;
-                        var targetUserId = $("#selectUser").val().trim();
-                        //a variable to store id of all groups of a user 
-                        var groupsArr = [];
+                        targetUserId = $("#selectUser").val().trim();
 
-                        //get all the groups where selected user exists
-                        getGroupsFromUser(targetUserId).done(function (data) {
-                            if (data.d && data.d.results.length > 0) {
-                                $.each(data.d.results, function (index, item) {
-                                    groupsArr.push(item.Id);
-                                });
-                            }
-                            //alert(groupsArr.toString());
+                        $.when(getGroupsFromUserId(targetUserId)).done(function () {
                             //get all the permissions info and filter them
                             $.each(siteRoleAssignments, function (index, item) {
-                                isExisted = false;
-
-                                if (item.Member.PrincipalType != 8) {
-                                    if (targetUserId == item.Member.Id) {
-                                        isExisted = true;
-                                    }
-                                }
-                                else {
-                                    if (groupsArr.indexOf(item.Member.Id) > -1) {
-                                        isExisted = true;
-                                    }
-                                }
-
-                                if (isExisted){
+                                if (HasPermissionOrNot(targetUserId, item.Member.Id, item.Member.Title, item.Member.PrincipalType)) {
                                     //get the least order number which means the largest permission
-                                    var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                                    $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                                    roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
                                     //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                                 }
                             });
                         });
@@ -649,20 +573,18 @@
                             //check whether a group have permission on a site
                             if (item.Member.PrincipalType == 8 && $("#selectGroup").val() == item.Member.Id) {
                                 //get the least order number which means the largest permission
-                                var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                                $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                                roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
                                 //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                             }
                         });
                     }
                     else {//case 3: neither of user and group are selected
                         $.each(siteRoleAssignments, function (index, item) {
                             //get the least order number which means the largest permission
-                            var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-
-                            $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + item.Member.Title + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+                            roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
                             //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
+                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
                         });
                     }
                 }
@@ -671,9 +593,37 @@
             });
         }
 
+        //show site permission info in Permissions panel
+        function addSecurityItemToPanel(currentTitle, currentRoleDefinitionBindingOrder, currentRoleDefinitionBindingName) {
+            if (currentRoleDefinitionBindingOrder != 160) {
+                $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + currentTitle + "</td><td class=\"col-sm-6\">" + currentRoleDefinitionBindingName + "</td></tr>");
+            }
+        }
+
+        //check whether selected user has permission in current item
+        function HasPermissionOrNot(selectedUserId, currentRoleAssignmentId, currentRoleAssignmentTitle, currentRoleDefinitionPrincipalType) {
+            isExisted = false;
+            if (currentRoleDefinitionPrincipalType == 1) {
+                if (selectedUserId == currentRoleAssignmentId) {
+                    isExisted = true;
+                }
+            }
+            else if (currentRoleDefinitionPrincipalType == 4) {
+                if (currentRoleAssignmentTitle === "NT AUTHORITY\authenticated users" || currentRoleAssignmentTitle === "FESTO\domain users") {
+                    isExisted = true;
+                }
+            }
+            else {
+                if (groupIdArr.indexOf(currentRoleAssignmentId) > -1) {
+                    isExisted = true;
+                }
+            }
+            return isExisted;
+        }
+
         //get id of all groups of one user
         //param: user id
-        function getGroupsFromUser(userId) {
+        function getGroupsFromUserId(userId) {
             return getGroupsFromUser(userId).done(function (data) {
                 if (data.d && data.d.results.length > 0) {
                     groupIdArr.length = 0
@@ -685,7 +635,7 @@
                 failEvent(xhr);
             });
         }
-        
+
         //show users in a certain group
         function showUsersOfGroup(usersURI) {
             getUsersInOneGroup(usersURI).done(function (data) {
@@ -753,10 +703,10 @@
         // restURI should be like http://isp.emea.festo.net/sites/jstraining/gb0acb/_api/Web/SiteGroups/GetById(7)/Users
         function getUsersInOneGroup(restURI) {
             return $.ajax({
-                        url: restURI,
-                        type: "GET",
-                        headers: { "Accept": "application/json;odata=verbose" } 
-                    });
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
         }
 
         //get groups where a user exists in
@@ -764,10 +714,10 @@
             //get groups of a user
             var restURL = String.format(groupsOfUserURI, webURL, userId);
             return $.ajax({
-                        url: restURL,
-                        type: "GET",
-                        headers: { "Accept": "application/json;odata=verbose" }
-                    });
+                url: restURL,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
         }
 
         //get all items inside a list or library: http://isp.emea.festo.net/sites/cn0jacky/_api/Web/Lists(guid'9957F1E6-A35A-4888-A770-D5325C5CFE74')/Items  -- Not Used
@@ -805,30 +755,30 @@
         // PrincipalType = 8 means it is a group, if PrincipalType equals to 1, it is a user;  PrincipalType equals to 4 means domain group
         function getSitePermissions(restURI) {
             return $.ajax({
-                        url: restURI,
-                        type: "GET",
-                        headers: { "Accept": "application/json;odata=verbose" }
-                    });
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
         }
 
         //get permissions of a list or library
         //http://isp.emea.festo.net/sites/jstraining//_api/Web/Lists(guid'aa9e7b0f-c2c2-44b0-a683-3721eaaf220a')?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=Title,Id,RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/IsHiddenInUI,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,RoleAssignments/Member/Users,RoleAssignments/Member/Groups,HasUniqueRoleAssignments&$filter=RoleAssignments/Member/IsHiddenInUI eq false&$orderby=RoleAssignments/Member/Title desc
         function getListPermissions(restURI) {
             return $.ajax({
-                        url: restURI,
-                        type: "GET",
-                        headers: { "Accept": "application/json;odata=verbose" }
-                    });
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
         }
 
         //get permissions of a file or folder, can't be used for a library
         //http://isp.emea.festo.net/sites/jstraining/_api/Web/GetFolderByServerRelativeUrl('/sites/jstraining/SiteAssets/Meeting_Room_Reservation')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,HasUniqueRoleAssignments
         function getItemPermissions(restURI) {
             return $.ajax({
-                        url: restURI,
-                        type: "GET",
-                        headers: { "Accept": "application/json;odata=verbose" }
-                    });
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
         }
 
         //check whether an object has unique permission
@@ -838,10 +788,10 @@
         ////http://isp.emea.festo.net/sites/cn0jacky/_api/Web/GetFileByServerRelativeUrl('/sites/cn0jacky/Documents/TEST.txt')/ListItemAllFields/HasUniqueRoleAssignments
         function checkUniqueRoleAssignment(restURI) {
             return $.ajax({
-                        url: restURI,
-                        type: "GET",
-                        headers: { "Accept": "application/json;odata=verbose" }
-                    });
+                url: restURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
         }
 
         //check whether current user is site collection administrator
