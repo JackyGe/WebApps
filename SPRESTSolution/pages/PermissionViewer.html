@@ -609,7 +609,7 @@
                 }
             }
             else if (currentRoleDefinitionPrincipalType == 4) {
-                if (currentRoleAssignmentTitle === "NT AUTHORITY\authenticated users" || currentRoleAssignmentTitle === "FESTO\domain users") {
+                if (currentRoleAssignmentTitle == "NT AUTHORITY\\authenticated users" || currentRoleAssignmentTitle == "FESTO\\domain users") {
                     isExisted = true;
                 }
             }
