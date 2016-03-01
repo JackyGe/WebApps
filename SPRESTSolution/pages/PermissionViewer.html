@@ -476,6 +476,9 @@
                         });
                     }
                 }
+                else {
+                    $("#" + permissionTableId).append("<tr><td>There is no permission details.</td></tr>");
+                }
             }).fail(function (xhr) {
                 failEvent(xhr);
             });
