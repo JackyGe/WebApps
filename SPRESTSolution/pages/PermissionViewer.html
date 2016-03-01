@@ -126,6 +126,7 @@
         var subSitesURI = "/_api/Web/WebInfos?$orderby=Title desc";
         var listLibURI = "/_api/Web/lists?$filter=Hidden ne true&$expand=RootFolder,HasUniqueRoleAssignments&$select=Title,Id,ParentWebUrl,BaseType,Items,RoleAssignments,ItemCount,RootFolder/ServerRelativeUrl,RootFolder/ItemCount,HasUniqueRoleAssignments&$orderby=Title desc";
         var siteUsersURI = "/_api/Web/siteusers?$filter=IsHiddenInUI eq false and PrincipalType eq 1&$orderby=Title";
+        var domainUsersURI = "/_api/Web/siteusers?$expand=Groups&$select=Id,Title,PrincipalType,Groups/Id,Groups/Title&$filter=IsHiddenInUI eq false and PrincipalType eq 4&$orderby=Title";
         var siteGroupsURI = "/_api/web/roleassignments/groups?$filter=IsHiddenInUI eq false and PrincipalType eq 8&$orderby=Title desc";
         var sitePermissionsURI = "/_api/Web/roleassignments?$expand=RoleDefinitionBindings,Member&$select=Member/Title,Member/Id,Member/IsHiddenInUI,Member/PrincipalType,RoleDefinitionBindings/Name,RoleDefinitionBindings/Order,Member/Users,Member/Groups&$filter=Member/IsHiddenInUI eq false&$orderby=Member/Title";
         //get permission of a list/library
@@ -151,6 +152,7 @@
         var hostURL, webURL; //web absolute url
         var treeview;
         var groupIdArr = [];
+        var groupIdArrOfDomainUser = [];
         var isExisted;
         var targetUserId;
 
@@ -447,7 +449,7 @@
                     if ($("#selectUser").val() !== "") {
                         targetUserId = $("#selectUser").val().trim();
 
-                        $.when(getGroupsFromUserId(targetUserId)).done(function () {
+                        $.when(getGroupsFromUserId(targetUserId), getGroupsFromDomainUser()).done(function () {
                             $.each(itemRoleAssignments, function (index, item) {
                                 if (HasPermissionOrNot(targetUserId, item.Member.Id, item.Member.PrincipalType)) {
                                     //get a sorted permission array, the first item is the largest permission level
@@ -499,7 +501,7 @@
                     if ($("#selectUser").val() !== "") {
                         targetUserId = $("#selectUser").val().trim();
 
-                        $.when(getGroupsFromUserId(targetUserId)).done(function () {
+                        $.when(getGroupsFromUserId(targetUserId), getGroupsFromDomainUser()).done(function () {
                             $.each(listRoleAssignments, function (index, item) {
                                 if (HasPermissionOrNot(targetUserId, item.Member.Id, item.Member.PrincipalType)) {
                                     //get a sorted permission array, the first item is the largest permission level
@@ -556,7 +558,7 @@
                     if ($("#selectUser").val() !== "") {
                         targetUserId = $("#selectUser").val().trim();
 
-                        $.when(getGroupsFromUserId(targetUserId)).done(function () {
+                        $.when(getGroupsFromUserId(targetUserId), getGroupsFromDomainUser()).done(function () {
                             //get all the permissions info and filter them
                             $.each(siteRoleAssignments, function (index, item) {
                                 if (HasPermissionOrNot(targetUserId, item.Member.Id, item.Member.Title, item.Member.PrincipalType)) {
@@ -609,12 +611,12 @@
                 }
             }
             else if (currentRoleDefinitionPrincipalType == 4) {
-                if (currentRoleAssignmentTitle == "NT AUTHORITY\\authenticated users" || currentRoleAssignmentTitle == "FESTO\\domain users") {
+                if (currentRoleAssignmentTitle == "NT AUTHORITY\\authenticated users" || currentRoleAssignmentTitle == "FESTO\\domain users" || currentRoleAssignmentTitle == "Everyone") {
                     isExisted = true;
                 }
             }
             else {
-                if (groupIdArr.indexOf(currentRoleAssignmentId) > -1) {
+                if (groupIdArr.indexOf(currentRoleAssignmentId) > -1 || groupIdArrOfDomainUser.indexOf(currentRoleAssignmentId) > -1) {
                     isExisted = true;
                 }
             }
@@ -626,13 +628,31 @@
         function getGroupsFromUserId(userId) {
             return getGroupsFromUser(userId).done(function (data) {
                 if (data.d && data.d.results.length > 0) {
-                    groupIdArr.length = 0
+                    groupIdArr.length = 0;
                     $.each(data.d.results, function (index, item) {
                         groupIdArr.push(item.Id);
                     });
                 }
             }).fail(function (xhr) {
                 failEvent(xhr);
+            });
+        }
+
+        //get id of all groups of domain users
+        function getGroupsFromDomainUser() {
+            return getAllDomainUsers().done(function (data) {
+                if (data.d && data.d.results.length > 0) {
+                    groupIdArrOfDomainUser.length = 0;
+                    $.each(data.d.results, function (index, item) {
+                        if (item.Groups.results.length > 0) {
+                            $.each(item.Groups.results, function (groupIndex, groupItem) {
+                                if ($.inArray(groupItem.Id, groupIdArrOfDomainUser) === -1) {
+                                   groupIdArrOfDomainUser.push(groupItem.Id);
+                                }
+                            });
+                        }
+                    });
+                }
             });
         }
 
@@ -679,11 +699,21 @@
             });
         }
 
-        //get all users
+        //get all site users
         function getAllUsers() {
             var userInfoURI = webURL + siteUsersURI;
             return $.ajax({
                 url: userInfoURI,
+                type: "GET",
+                headers: { "Accept": "application/json;odata=verbose" }
+            });
+        }
+
+        //get all domain users info
+        function getAllDomainUsers() {
+            var domainUserInforURI = webURL + domainUsersURI;
+            return $.ajax({
+                url: domainUserInforURI,
                 type: "GET",
                 headers: { "Accept": "application/json;odata=verbose" }
             });
@@ -770,7 +800,7 @@
                 headers: { "Accept": "application/json;odata=verbose" }
             });
         }
-
+        
         //get permissions of a file or folder, can't be used for a library
         //http://isp.emea.festo.net/sites/jstraining/_api/Web/GetFolderByServerRelativeUrl('/sites/jstraining/SiteAssets/Meeting_Room_Reservation')/ListItemAllFields?$expand=RoleAssignments/Member,RoleAssignments/RoleDefinitionBindings&$select=RoleAssignments/Member/Title,RoleAssignments/Member/Id,RoleAssignments/Member/PrincipalType,RoleAssignments/RoleDefinitionBindings/Name,RoleAssignments/RoleDefinitionBindings/Order,HasUniqueRoleAssignments
         function getItemPermissions(restURI) {
