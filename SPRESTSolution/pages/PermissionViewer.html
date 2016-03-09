@@ -395,10 +395,9 @@
 
         //clear 'Select group' dropdown menu
         function clearSelectedUser() {
-            //alert($("#selectUser option[value='" + $(".userSelectCtrl").val() + "']").data('userid'));
-            if ($(".userSelectCtrl").val() !== "") {
+            if ($("#selectUser").val() !== "") {
                 $('#selectUser option:first-child').attr("selected", "selected");
-                $(".userSelectCtrl").val("");
+                $("#selectUser").val("");
             }
         }
 
