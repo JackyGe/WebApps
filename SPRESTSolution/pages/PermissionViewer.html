@@ -2,9 +2,11 @@
 <html>
 <head>
     <title>Permission Viewer</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/SPRESTSolution/bootstrap-3.3.6/css/bootstrap.min.css">
+    
     <style>
         #treeSiteStructure, #permissionArea {
             height: 400px;
@@ -56,8 +58,8 @@
             </div>
             <div class="form-group">
                 <label for="textSelectUser" class="col-sm-2 control-label">Select user:</label>
-                <div class="col-sm-3">
-                    <select id="selectUser" class="form-control"></select>
+                <div class="col-sm-3 userSelectContainer">
+                    <select id="selectUser" class="form-control userSelectCtrl"></select>
                 </div>
                 <div class="col-sm-1">
                 </div>
@@ -65,8 +67,8 @@
                     <label class="control-label">- or -</label>
                 </div>
                 <label for="textSelectGroup" class="col-sm-2 control-label">Select group:</label>
-                <div class="col-sm-3">
-                    <select id="selectGroup" class="form-control"></select>
+                <div class="col-sm-3 groupSelectContainer">
+                    <select id="selectGroup" class="form-control groupSelectCtrl"></select>
                 </div>
             </div>
         </div>
@@ -112,7 +114,7 @@
         }
 
         //template
-        var userTemplate = "<option value=\"{0}\" data-loginName=\"{1}\" data-groupsURI=\"{2}\">{3}</option>";
+        var userTemplate = "<option value=\"{0}\" data-loginName=\"{1}\" data-groupsURI=\"{2}\" data-userId=\"{3}\">{4}</option>";
         var groupTemplate = "<option value=\"{0}\" data-usersURI=\"{1}\">{2}</option>";
         var rootTemplate = "<tr class=\"treeview-{0} rootNode\"><td>{1}</td></tr>";
         var listSubNodeTemplate = "<tr class=\"treeview-{0} treeview-parent-{1} {2}\"><td><a class=\"list\" href=\"#\" data-authURI=\"{3}\" data-uniquePermission={4}>{5}</a></td></tr>";
@@ -259,10 +261,10 @@
                 if (data.d) {
                     isAdmin = data.d.IsSiteAdmin; // true or false
                     if (isAdmin) {
-                        alert("You are site collection administrator!");
+                        alert("You are a site collection administrator!");
                     }
                     else {
-                        alert("You are not a site collection administrator!");
+                        alert("You are not a site collection administrator!. There may be something in this site you can't access!");
                     }
 
                     //add root nodes firstly
@@ -290,9 +292,11 @@
                     $selector.find("option").remove();
 
                     $.each(data.d.results, function (index, item) {
-                        $selector.append($(String.format(userTemplate, item.Id, item.LoginName, item.Groups.__deferred.uri, item.Title + " - " + item.LoginName.split("\\")[1])));
+                        var displayValue = item.Title + " - " + item.LoginName.split("\\")[1];
+
+                        $selector.append($(String.format(userTemplate, displayValue, item.LoginName, item.Groups.__deferred.uri, item.Id, displayValue)));
                     });
-                    $selector.prepend($(String.format(userTemplate, "", "", "", "")));
+                    $selector.prepend($(String.format(userTemplate, "", "", "", "","")));
                 }
             })
             .fail(function (xhr) {
@@ -391,9 +395,10 @@
 
         //clear 'Select group' dropdown menu
         function clearSelectedUser() {
-            if ($('#selectUser').val() !== "") {
+            //alert($("#selectUser option[value='" + $(".userSelectCtrl").val() + "']").data('userid'));
+            if ($(".userSelectCtrl").val() !== "") {
                 $('#selectUser option:first-child').attr("selected", "selected");
-                $('#selectUser').val("");
+                $(".userSelectCtrl").val("");
             }
         }
 
@@ -446,15 +451,15 @@
 
                     var itemRoleAssignments = data.d.RoleAssignments.results;
                     //case 1: when selecting user
-                    if ($("#selectUser").val() !== "") {
-                        targetUserId = $("#selectUser").val().trim();
+                    if ($("#selectUser option:selected").data("userid") !== "") {
+                        targetUserId = $("#selectUser option:selected").data("userid");
 
                         $.when(getGroupsFromUserId(targetUserId), getGroupsFromDomainUser()).done(function () {
                             $.each(itemRoleAssignments, function (index, item) {
                                 if (HasPermissionOrNot(targetUserId, item.Member.Id, item.Member.PrincipalType)) {
                                     //get a sorted permission array, the first item is the largest permission level
                                     var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                                 }
                             });
                         });
@@ -464,7 +469,7 @@
                             if (item.Member.PrincipalType == 8 && $("#selectGroup").val() == item.Member.Id) {
                                 //get a sorted permission array, the first item is the largest permission level
                                 var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                             }
                         });
                     }
@@ -472,7 +477,7 @@
                         $.each(itemRoleAssignments, function (index, item) {
                             //get a sorted permission array, the first item is the largest permission level
                             var roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                         });
                     }
                 }
@@ -501,15 +506,15 @@
                     var roleDefinitionBindings;
 
                     //case 1: when selecting user
-                    if ($("#selectUser").val() !== "") {
-                        targetUserId = $("#selectUser").val().trim();
+                    if ($("#selectUser option:selected").data("userid") !== "") {
+                        targetUserId = $("#selectUser option:selected").data("userid");
 
                         $.when(getGroupsFromUserId(targetUserId), getGroupsFromDomainUser()).done(function () {
                             $.each(listRoleAssignments, function (index, item) {
                                 if (HasPermissionOrNot(targetUserId, item.Member.Id, item.Member.PrincipalType)) {
                                     //get a sorted permission array, the first item is the largest permission level
                                     roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                                 }
                             });
                         });
@@ -519,7 +524,7 @@
                             if (item.Member.PrincipalType == 8 && $("#selectGroup").val() == item.Member.Id) {
                                 //get a sorted permission array, the first item is the largest permission level
                                 roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                             }
                         });
                     }
@@ -527,7 +532,7 @@
                         $.each(listRoleAssignments, function (index, item) {
                             //get a sorted permission array, the first item is the largest permission level
                             roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
-                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                         });
                     }
                 }
@@ -558,8 +563,8 @@
                     var roleDefinitionBindings;
 
                     //Case 1 : when selecting user   --> to be done
-                    if ($("#selectUser").val() !== "") {
-                        targetUserId = $("#selectUser").val().trim();
+                    if ($("#selectUser option:selected").data("userid") !== "") {
+                        targetUserId = $("#selectUser option:selected").data("userid");
 
                         $.when(getGroupsFromUserId(targetUserId), getGroupsFromDomainUser()).done(function () {
                             //get all the permissions info and filter them
@@ -568,7 +573,7 @@
                                     //get the least order number which means the largest permission
                                     roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
                                     //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
-                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                                    addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                                 }
                             });
                         });
@@ -580,7 +585,7 @@
                                 //get the least order number which means the largest permission
                                 roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
                                 //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
-                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                                addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                             }
                         });
                     }
@@ -589,7 +594,7 @@
                             //get the least order number which means the largest permission
                             roleDefinitionBindings = item.RoleDefinitionBindings.results.sort(function (a, b) { return a.Order - b.Order; });
                             //item.RoleDefinitionBindings.results[n].Name --> according to item.RoleDefinitionBindings.results[n].Order, 1 is full control, 160 is limited access, the largest permission has the least order value
-                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings[0].Order, roleDefinitionBindings[0].Name);
+                            addSecurityItemToPanel(item.Member.Title, roleDefinitionBindings);
                         });
                     }
                 }
@@ -599,9 +604,14 @@
         }
 
         //show site permission info in Permissions panel
-        function addSecurityItemToPanel(currentTitle, currentRoleDefinitionBindingOrder, currentRoleDefinitionBindingName) {
-            if (currentRoleDefinitionBindingOrder != 160) {
-                $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + currentTitle + "</td><td class=\"col-sm-6\">" + currentRoleDefinitionBindingName + "</td></tr>");
+        function addSecurityItemToPanel(currentTitle, roleDefinitionBindings) {
+            if (roleDefinitionBindings[0].Name != "Limited Access") {
+                $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + currentTitle + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[0].Name + "</td></tr>");
+            }
+            else {
+                if (roleDefinitionBindings.length > 1) {
+                    $("#" + permissionTableId).append("<tr class=\"row\"><td class=\"col-sm-6\">" + currentTitle + "</td><td class=\"col-sm-6\">" + roleDefinitionBindings[1].Name + "</td></tr>");
+                }
             }
         }
 
@@ -856,7 +866,7 @@
 
             //click event of 'Load' button
             $("#btnLoadSite").on("click", function () {
-                var webAbsoluteUrl = $("#textSiteURL").val().trim(); //_spPageContextInfo.webAbsoluteUrl;
+                var webAbsoluteUrl = $("#textSiteURL").val(); //_spPageContextInfo.webAbsoluteUrl;
                 if (webAbsoluteUrl && webAbsoluteUrl.length > 7) {
                     var arrWebURL = webAbsoluteUrl.split("/");
                     if (arrWebURL && arrWebURL.length > 2) {
